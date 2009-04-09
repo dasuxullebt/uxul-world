@@ -1,0 +1,30 @@
+listen-to relation
+a
+	b
+bedeutet: a listens to b
+
+player
+	stone
+	bottom
+	moving-item
+	standing-item
+	moving-enemy
+	standing-enemy
+
+standing-stone
+
+standing-item
+
+moving-item
+	player
+
+moving-enemy
+	player
+	stone
+
+standing-enemy
+
+subclasses:
+moving-enemy => nasobem, flying-nasobem, jumping-marchmallow
+standing-enemy => needle, fire
+item => bulb, slobber, tulip

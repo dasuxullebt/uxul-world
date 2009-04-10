@@ -114,8 +114,8 @@ images-variable."
   (make-instance 'animation
 		 :images (mapcar
 			  #'(lambda (x)
-			      (sdl-image:load-image
+			      (sdl:convert-surface :surface (sdl-image:load-image
 			       x
-			       :image-type :PNG :alpha 1 ))
+			       :image-type :PNG :alpha 1 )))
 				 image-list)
 		 :sprite-delay frame-skip))

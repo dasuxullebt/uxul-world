@@ -5,42 +5,25 @@
 (in-package :uxul-world)
 
 (defun draw-background (x-trans y-trans)
+  (let ((ani3 (car (images (make-animation 0 |background_test_layer_3|))))
+	(ani2 (car (images (make-animation 0 |background_test_layer_2|)))))
 
-
-  (flet ((modf (x y)
-	     (if nil ;(< x 0)
-		 (- y (mod x y))
-		 (mod x y))))
-
-
-  #|(sdl:draw-rectangle-* (+ 100 (ceiling (/ (mod x-trans 800) 2))) (+ 100 (ceiling (/ (mod y-trans 800) 2))) 400 400
-			:color (sdl:color :r 255 :g 255 :b 255))|#
-  ;; layer -1
-
-    ;; HAAAAAAAAAAAAACK
-    (incf x-trans (- 10000 300))
-    (incf x-trans (- 10000 300))
-
-  (dolist (i '(8 9 10 11 12 13 14 15 16 17 18 19 20))
-    (dolist (j '(8 9 10 11 12 13 14 15 16 17 18 19 20))
-      (sdl:draw-box-* (+ (- +screen-width+) (* 100 i) (round (/ (modf x-trans (* 2 +screen-width+)) 16))) (+ (- +screen-width+) (* 100 j) (ceiling (/ (modf y-trans (* 2 +screen-height+)) 16))) 50 50
-			    :color (sdl:color :r (+ 128 64) :g (+ 128 64) :b (+ 128 64)))) :fill t)
-
-  (dolist (i '(4 5 6 7 8 9))
-    (dolist (j '(4 5 6 7 8 9))
-      (sdl:draw-box-* (+ (- +screen-width+) (* 200 i) (round (/ (modf x-trans (* 2 +screen-width+)) 8))) (+ (- +screen-width+) (* 200 j) (ceiling (/ (modf y-trans (* 2 +screen-height+)) 8))) 100 100
-			    :color (sdl:color :r 128 :g 128 :b 128))) :fill t)
-  (dolist (i '(2 3 4 5))
-    (dolist (j '(2 3 4 5))
-      (sdl:draw-box-* (+ (- +screen-width+) (* 400 i) (round (/ (modf x-trans (* 2 +screen-width+)) 4))) (+ (- +screen-width+) (* 400 j) (ceiling (/ (modf y-trans (* 2 +screen-height+)) 4))) 200 200
-			    :color (sdl:color :r 64 :g 64 :b 64))) :fill t)
-  (dotimes (i 4)
-    (dotimes (j 4)
-      (sdl:draw-box-* (+ (- +screen-width+) (* 800 i) (round (/ (modf x-trans (* 2 +screen-width+)) 2))) (+ (- +screen-width+) (* 800 j) (ceiling (/ (modf y-trans (* 2 +screen-height+)) 2))) 400 400
-			    :color (sdl:color :r 0 :g 0 :b 0))) :fill t)))
-
-
-
+    (loop for i from -1 to 16
+	 do (loop for j from -1 to 12
+		 do (progn
+		      (sdl:draw-surface-at-* ani2
+					     (+ (* i 64) (round
+							  (mod (/ x-trans 4) 64)))
+					     (+ (* j 64) (round
+							  (mod (/ y-trans 4) 64)))))))
+    (loop for i from -1 to 16
+	 do (loop for j from -1 to 12
+		 do 
+		 (sdl:draw-surface-at-* ani3
+					     (+ (* 64 i) (round
+							  (mod (/ x-trans 2) 64)))
+					     (+ (* 64 j) (round
+							  (mod (/ y-trans 2) 64))))))))
 
 (defmethod draw ((obj room))
   (let ((*current-translation-x*
@@ -61,7 +44,7 @@
 	    (- 300 (y (graphic-centralizer obj)))))|#
 	 (- 300 (y (graphic-centralizer obj)))
 	  ))
-    ;;(draw-background *current-translation-x* *current-translation-y*)
+    (draw-background *current-translation-x* *current-translation-y*)
     (dolist (image (get-objects obj 'uxul-world::game-object))
       (if (and (redraw image) (visible image)) (draw image)))))
 

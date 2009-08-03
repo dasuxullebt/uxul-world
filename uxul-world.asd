@@ -12,8 +12,7 @@
 				 ;#:asdf
 				 #:ltk
 				 #:lisp-magick
-                                 #:lispbuilder-sdl-image
-                                 #:trivial-garbage)
+                                 #:lispbuilder-sdl-image)
   :components ((:file "package")
                (:file "macros")
                (:file "constants")

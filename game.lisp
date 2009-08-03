@@ -16,12 +16,7 @@ drawn (for very slow computers)"
 		   ;:flags (logior sdl:sdl-hw-surface) #| sdl:sdl-fullscreen )|# 
 )
        ;;(if music (sdl-mixer:OPEN-AUDIO :frequency 44100))
-       (let ((*graphics-table*
-	      #-ecl (trivial-garbage:make-weak-hash-table
-		     :weakness :value
-		     :test #'equal)
-	      #+ecl (make-hash-table :test #'equal)
-	      ))	 
+       (let ((*graphics-table* (make-hash-table :test #'equal)))
 	 (if 15-fps
 	     (setf (sdl:frame-rate) 15)
 	     (setf (sdl:frame-rate) 30))

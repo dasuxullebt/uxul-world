@@ -93,3 +93,51 @@
       (funcall (invocation-function obj) obj)
       (dolist (invoker (get-objects obj 'uxul-world::game-object))
 	(if (active invoker) (invoke invoker)))))
+
+(defun create-room-from-item-list (item-list)
+  (let*
+      ((player (make-instance 'player
+				:active t
+				:visible t
+				:redraw t))
+       (room (make-instance 'room :width 0 :height 0
+			    :graphic-centralizer player
+			    :key-listener player
+			    :key-up-function #'(lambda (key) (on-key-up player key))
+			    :key-down-function #'(lambda (key) (on-key-down player key)))))
+  (dolist (item item-list)
+    (let ((y (car item))
+	  (x (cadr item))
+	  (type (caddr item)))
+      (cond
+	((eq type 'uxul)
+	 (setf (x player) (* 128 x))
+	 (setf (y player) (* 128 y))
+	 (add-object player room))
+	((eq type 'tulip)
+	 (add-object (make-instance 'tulip
+				    :x (* 128 x)
+				    :y (* 128 y)) room))
+	((eq type 'brown-stone)
+	 (add-object (make-instance 'stone
+				    :animation (make-animation 0 |brown_stone|)
+				    :x (* 128 x)
+				    :y (* 128 y)) room))
+	((eq type 'gray-stone)
+	 (add-object (make-instance 'stone
+				    :animation (make-animation 0 |gray_stone|)
+				    :x (* 128 x)
+				    :y (* 128 y)) room))
+	((eq type 'nasobem)
+	 (add-object (make-instance 'simple-enemy
+				    :x (* 128 x)
+				    :y (* 128 y)) room))
+	((eq type 'blue-nasobem)
+	 (add-object (make-instance 'flying-nasobem
+				    :x (* 128 x)
+				    :y (* 128 y)) room))
+	(T
+	 (add-object (make-instance type
+				 :x (* 128 x)
+				 :y (* 128 y)) room)))))
+  room))

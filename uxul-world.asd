@@ -9,17 +9,13 @@
   :license "Copyright 2009 Christoph Senjak."
   :depends-on (#:lispbuilder-sdl #:closer-mop
 				 #:cl-fad
-				 ;#:asdf
-				 #:ltk
-				 #:lisp-magick
                                  #:lispbuilder-sdl-image)
-  :components ((:file "package")
+  :components ((:file "uxul-world")
                (:file "macros")
                (:file "constants")
                (:file "xy-coordinates")
                (:file "collision")
                (:file "files")
-	       (:file "leveleditor")
                (:file "animation")
                (:file "functions")
                (:file "game-object")

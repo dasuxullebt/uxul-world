@@ -1,6 +1,6 @@
 ;;; Copyright 2009 Christoph Senjak
 
-(in-package :uxul-world)
+(in-package :uxul-world-leveleditor)
 
 (defparameter *leveleditor-images* nil)
 
@@ -15,15 +15,15 @@
 (defun prepare-base64-images (&optional (care-about-initialization *leveleditor-images*))
   (when (not care-about-initialization)
     (setf *leveleditor-images* (make-hash-table))
-    (setf (gethash 'uxul *leveleditor-images*) (stretched-base64-image |uxul_small1|))
-    (setf (gethash 'leaf *leveleditor-images*) (stretched-base64-image |leaf|))
-    (setf (gethash 'nasobem *leveleditor-images*) (stretched-base64-image |nasobem|))
-    (setf (gethash 'blue-nasobem *leveleditor-images*) (stretched-base64-image |blue_nasobem|))
-    (setf (gethash 'burning-marshmallow *leveleditor-images*) (stretched-base64-image |burning_marshmallow_ld1|))
-    (setf (gethash 'gray-stone *leveleditor-images*) (stretched-base64-image |gray_stone|))
-    (setf (gethash 'brown-stone *leveleditor-images*) (stretched-base64-image |brown_stone|))
-    (setf (gethash 'empty *leveleditor-images*) (stretched-base64-image |empty|))
-    (setf (gethash 'tulip *leveleditor-images*) (stretched-base64-image |tulip|))))
+    (setf (gethash 'uxul *leveleditor-images*) (stretched-base64-image uxul-world::|uxul_small1|))
+    (setf (gethash 'leaf *leveleditor-images*) (stretched-base64-image uxul-world::|leaf|))
+    (setf (gethash 'nasobem *leveleditor-images*) (stretched-base64-image uxul-world::|nasobem|))
+    (setf (gethash 'blue-nasobem *leveleditor-images*) (stretched-base64-image uxul-world::|blue_nasobem|))
+    (setf (gethash 'burning-marshmallow *leveleditor-images*) (stretched-base64-image uxul-world::|burning_marshmallow_ld1|))
+    (setf (gethash 'gray-stone *leveleditor-images*) (stretched-base64-image uxul-world::|gray_stone|))
+    (setf (gethash 'brown-stone *leveleditor-images*) (stretched-base64-image uxul-world::|brown_stone|))
+    (setf (gethash 'empty *leveleditor-images*) (stretched-base64-image uxul-world::|empty|))
+    (setf (gethash 'tulip *leveleditor-images*) (stretched-base64-image uxul-world::|tulip|))))
 
 (defun load-image-into-tk (png-base64)
   "return a tkobject with this image"

@@ -46,7 +46,6 @@ form (x y object)."
     ret))
 
 (defun level-editor (&optional (level nil) (width 16) (height 16))
-  (declare (type '(integer 0 100) width height))
   (prepare-base64-images)
   (let ((item-table (make-hash-table :test 'equal)))
     ;;initialize given level

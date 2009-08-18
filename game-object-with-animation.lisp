@@ -13,7 +13,17 @@
 			  :documentation "The translation of the animation")
    (animation :initarg :animation
 	      :accessor animation
-	      :documentation "The animation of this object")))
+	      :documentation "The animation of this object")
+   (animation-bounds :initarg :animation-bounds
+		     :accessor animation-bounds
+		     :initform (make-xy 50 50)
+		     :documentation "When drawing, objects outside the
+   screen are tried not to be drawn via SDL. This determines, how far
+   in every direction the graphics may go outside the
+   collision-rectangle. Try to keep this number small. If it is too
+   huge, you may get numeric errors. 50/50 should be sufficient for
+   most objects. If this value is nil, the object will always be
+   drawn.")))
 
 (defmethod (setf animation) ((newval animation) (obj game-object-with-animation))
   "Sets the animation and x and y-coordinates. Wont rewind the animation."
@@ -35,16 +45,19 @@
   (setf (visible (animation obj)) newval))
 
 (defun rectangle-in-screen (obj)
-  (rectangles-overlap 
-   ;; HAAAAAAAAAAAAAAACK
-   (- (x obj) 50)
-   (- (y obj) 50)
-   (+ (x obj) (width obj) 50)
-   (+ (y obj) (height obj) 50)
-   *current-translation-x*
-   *current-translation-y*
-   (- +screen-width+ *current-translation-x*)
-   (- +screen-height+ *current-translation-y*)))
+  (let ((bounds (animation-bounds obj)))
+    (if bounds
+	(rectangles-overlap 
+	 ;; HAAAAAAAAAAAAAAACK
+	 (- (x obj) (x bounds))
+	 (- (y obj) (y bounds))
+	 (+ (x obj) (width obj) (x bounds))
+	 (+ (y obj) (height obj) (y bounds))
+	 (- *current-translation-x*)
+	 (- *current-translation-y*)
+	 (- +screen-width+ *current-translation-x*)
+	 (- +screen-height+ *current-translation-y*))
+	T)))
 
 
 

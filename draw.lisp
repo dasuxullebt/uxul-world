@@ -46,7 +46,9 @@
 	  ))
     (draw-background *current-translation-x* *current-translation-y*)
     (dolist (image (get-objects obj 'uxul-world::game-object))
-      (if (and (redraw image) (visible image)) (draw image)))))
+      (if (and (redraw image)
+	       (visible image)
+	       (rectangle-in-screen image)) (draw image)))))
 
 
 ;; FIXME

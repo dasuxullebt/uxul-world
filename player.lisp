@@ -28,6 +28,9 @@
 	      :initform  (make-animation 7
 					|uxul_small1|
 					|uxul_small2|))
+   (last-y :initarg :last-pos
+	     :accessor last-y
+	     :initform nil)
    (jump-accel :accessor jump-accel
 	       :initform -50)
    (mayjump :accessor mayjump
@@ -152,6 +155,13 @@
 
 (defmethod invoke ((obj player))
   "Do whatever a player does ^^"
+
+  (if (and
+       (last-y obj)
+       (< (last-y obj) (y obj)))
+      (setf (mayjump obj) nil))
+
+  (setf (last-y obj) (y obj))
 
   ;; SIMPLE GRAVITY HACK
   (setf (key-pressed-down obj) (not (key-pressed-up obj)))

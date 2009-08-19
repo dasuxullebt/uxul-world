@@ -31,6 +31,9 @@
    (last-y :initarg :last-pos
 	     :accessor last-y
 	     :initform nil)
+   (bounced :initarg :bounced
+	    :accessor bounced
+	    :initform nil)
    (jump-accel :accessor jump-accel
 	       :initform -50)
    (mayjump :accessor mayjump
@@ -156,10 +159,13 @@
 (defmethod invoke ((obj player))
   "Do whatever a player does ^^"
 
-  (if (and
-       (last-y obj)
-       (< (last-y obj) (y obj)))
-      (setf (mayjump obj) nil))
+  (cond
+    ((bounced obj)
+     (setf (bounced obj) nil))
+    ((and
+      (last-y obj)
+      (< (last-y obj) (y obj)))
+     (setf (mayjump obj) nil)))
 
   (setf (last-y obj) (y obj))
 

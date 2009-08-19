@@ -54,6 +54,7 @@
   (collide-blocks moving-rectangle
 		  standing-rectangle
 		  collision)
+  (setf (bounced moving-rectangle) T)
   (setf (mayjump moving-rectangle) T)
   (setf (autojump moving-rectangle) 5)
   (player-hits-enemy moving-rectangle

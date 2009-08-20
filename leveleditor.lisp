@@ -71,9 +71,9 @@ form (x y object)."
 	   (current-upper-left (cons 0 0))
 	   (current-chosen-object 'uxul)
 	   (objects-and-arrows (make-instance 'ltk:frame))
+	   (grid-frame (make-instance 'ltk:toplevel))
 	   (object-frame (make-instance 'ltk:frame :master objects-and-arrows))
 	   (arrow-frame (make-instance 'ltk:frame :master objects-and-arrows))
-	   (grid-frame (make-instance 'ltk:frame))
 	   (right-button (make-instance 'ltk:button :text ">"
 					:master arrow-frame))
 	   (left-button (make-instance 'ltk:button :text "<"

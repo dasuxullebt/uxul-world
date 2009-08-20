@@ -38,6 +38,14 @@ level-editor instead!"
 			       :visible t
 			       :redraw t) ret)
 
+;;***************************
+    (add-object (make-instance 'key
+			       :x (* 128 56)
+			       :y (* 128 8)
+			       :dungeon :testing-room
+			       :visible t
+			       :redraw t) ret)
+
 
     (add-object (make-instance 'burning-marshmallow
 			       :x (* 128 60)
@@ -282,6 +290,20 @@ level-editor instead!"
     (add-object (make-instance 'flying-nasobem
 			       :x (* 128 87)
 			       :y (* 128 2)) ret)
+    ;;*******************************
+    (add-object (make-instance 'door
+			       :x (* 128 87)
+			       :y (* 128 1)
+			       :dungeon :testing-room
+			       :visible t
+			       :redraw t) ret)
+    (add-object (make-instance 'door
+			       :x (* 128 89)
+			       :y (* 128 1)
+			       :dungeon :testing-room
+			       :visible t
+			       :redraw t) ret)
+
     (add-object (make-instance 'flying-nasobem
 			       :x (* 128 110)
 			       :y (* 128 4)) ret)

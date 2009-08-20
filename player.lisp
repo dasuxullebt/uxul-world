@@ -75,10 +75,12 @@
 	       :documentation "after hit by an enemy you wont be
 	       wounded by another enemy for that ammount of
 	       frames.")
-   (keys :initform 0
+   (keys :initform nil
+	 :initarg :keys
 	 :accessor keys
-	 :documentation "Number of keys for doors")
-   ))
+	 :documentation "List of Key-Dungeons of keys (i.e. for every
+   key its key-dungeon is pushed on that list, for every door, its
+   removed again).")  ))
 
 
 ;; Interaction with enemies
@@ -117,6 +119,12 @@
   (format t "item-catch called with non-fitting classes: ~A ~A~%"
 	  (class-name (class-of item))
 	  (class-name (class-of player))))
+
+(defmethod item-catch ((item key) (player player) &rest args)
+  (declare (ignore args))
+  (push (dungeon item) (keys player))
+  (setf (visible item) nil)
+  (setf (colliding item) nil))
 
 (defmethod (setf animation) ((new-value animation) (object player))
   (setf (x new-value) (+ (x object) (x(animation-translation object))))

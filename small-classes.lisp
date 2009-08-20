@@ -27,3 +27,33 @@
    (height :initarg :height
 	   :accessor :height
 	   :initform 128)))
+
+(defclass key (standing-item)
+  ((animation :initarg :animation
+	      :accessor animation
+	      :initform (make-animation 0 |key|))
+   (width :initarg :width
+	  :accessor width
+	  :initform 128)
+   (height :initarg :height
+	   :accessor height
+	   :initform 128)
+   (dungeon :initarg :dungeon
+	    :accessor dungeon
+	    :initform nil
+	    :documentation "To provide information in which rooms this key can be used.")))
+
+(defclass door (stone)
+  ((animation :initarg :animation
+	      :accessor animation
+	      :initform (make-animation 0 |door|))
+   (width :initarg :width
+	  :accessor width
+	  :initform 128)
+   (height :initarg :height
+	   :accessor height
+	   :initform 128)
+   (dungeon :initarg :dungeon
+	    :accessor dungeon
+	    :initform nil
+	    :documentation "To provide information in which room this door is.")))

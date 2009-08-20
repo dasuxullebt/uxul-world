@@ -26,6 +26,25 @@
 
 (defmethod on-collision
     ((moving-rectangle player)
+     (standing-rectangle door)
+     (collision collision))
+
+  (cond ((find (dungeon standing-rectangle) (keys moving-rectangle))
+	 (setf (keys moving-rectangle) (delete (dungeon standing-rectangle) (keys moving-rectangle) :count 1))
+	 (setf (visible standing-rectangle) nil)
+	 (setf (active standing-rectangle) nil)
+	 (setf (colliding standing-rectangle) nil))
+	((eql (direction collision) :DOWN)
+	 ;; "bottom" - allow jumping again
+	 (setf (mayjump moving-rectangle) T))
+	 ;; "ceiling" - dont allow continuing jump
+	((eql (direction collision) :UP)
+	 (setf (maycontjump moving-rectangle) nil)))
+  (collide-blocks moving-rectangle standing-rectangle collision))
+
+
+(defmethod on-collision
+    ((moving-rectangle player)
      (standing-rectangle tulip)
      (collision collision))
   (setf (visible standing-rectangle) nil)

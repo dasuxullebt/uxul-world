@@ -4,35 +4,53 @@
 
 (defparameter *leveleditor-images* nil)
 
-(defun stretched-base64-image (img)
+(defun stretched-image (img)
   "Call ImageMagick to resize that file to 32x32."
   (lisp-magick:with-magick-wand (mywand)
     (lisp-magick::magick-read-image-blob mywand img)
     (lisp-magick::magick-resize-image mywand 32 32 #x00000000 1d0)
     (lisp-magick::magick-set-format mywand "gif")
-    (base64-encode-byteseq (lisp-magick::magick-get-image-blob mywand))))
+    (lisp-magick::magick-get-image-blob mywand)))
 
-(defun prepare-base64-images (&optional (care-about-initialization *leveleditor-images*))
+(defun annotated-image (img ann)
+  "Add a (lower-left) annotation."
+  (lisp-magick:with-magick-wand (mywand)
+    (lisp-magick::magick-read-image-blob mywand img)
+    (lisp-magick:with-drawing-wand (dw)
+      (lisp-magick:with-pixel-wand (pw :comp (255 255 255))
+	(lisp-magick::draw-set-text-under-color dw pw))
+      (lisp-magick:with-pixel-wand (pw :comp (255 0 0))
+	(lisp-magick::draw-set-fill-color dw pw))
+      (lisp-magick:draw-annotation dw (coerce 0 'double-float) (coerce 32 'double-float) ann)
+      (lisp-magick:magick-draw-image mywand dw))
+    (lisp-magick::magick-set-format mywand "gif")
+    (lisp-magick::magick-get-image-blob mywand)))
+
+(defun numbered-image (img num)
+  "Annotate the image with a number."
+  (annotated-image img (format nil "~d" num)))
+
+(defun prepare-images (&optional (care-about-initialization *leveleditor-images*))
   (when (not care-about-initialization)
     (setf *leveleditor-images* (make-hash-table))
-    (setf (gethash 'uxul-world::uxul *leveleditor-images*) (stretched-base64-image uxul-world::|uxul_small1|))
-    (setf (gethash 'uxul-world::leaf *leveleditor-images*) (stretched-base64-image uxul-world::|leaf|))
-    (setf (gethash 'uxul-world::nasobem *leveleditor-images*) (stretched-base64-image uxul-world::|nasobem|))
-    (setf (gethash 'uxul-world::blue-nasobem *leveleditor-images*) (stretched-base64-image uxul-world::|blue_nasobem|))
-    (setf (gethash 'uxul-world::burning-marshmallow *leveleditor-images*) (stretched-base64-image uxul-world::|burning_marshmallow_ld1|))
-    (setf (gethash 'uxul-world::gray-stone *leveleditor-images*) (stretched-base64-image uxul-world::|gray_stone|))
-    (setf (gethash 'uxul-world::brown-stone *leveleditor-images*) (stretched-base64-image uxul-world::|brown_stone|))
-    (setf (gethash 'uxul-world::empty *leveleditor-images*) (stretched-base64-image uxul-world::|empty|))
-    (setf (gethash 'uxul-world::tulip *leveleditor-images*) (stretched-base64-image uxul-world::|tulip|))
-    (setf (gethash 'uxul-world::door *leveleditor-images*) (stretched-base64-image uxul-world::|door|))
-    (setf (gethash 'uxul-world::key *leveleditor-images*) (stretched-base64-image uxul-world::|key|))
+    (setf (gethash 'uxul-world::uxul *leveleditor-images*) (stretched-image uxul-world::|uxul_small1|))
+    (setf (gethash 'uxul-world::leaf *leveleditor-images*) (stretched-image uxul-world::|leaf|))
+    (setf (gethash 'uxul-world::nasobem *leveleditor-images*) (stretched-image uxul-world::|nasobem|))
+    (setf (gethash 'uxul-world::blue-nasobem *leveleditor-images*) (stretched-image uxul-world::|blue_nasobem|))
+    (setf (gethash 'uxul-world::burning-marshmallow *leveleditor-images*) (stretched-image uxul-world::|burning_marshmallow_ld1|))
+    (setf (gethash 'uxul-world::gray-stone *leveleditor-images*) (stretched-image uxul-world::|gray_stone|))
+    (setf (gethash 'uxul-world::brown-stone *leveleditor-images*) (stretched-image uxul-world::|brown_stone|))
+    (setf (gethash 'uxul-world::empty *leveleditor-images*) (stretched-image uxul-world::|empty|))
+    (setf (gethash 'uxul-world::tulip *leveleditor-images*) (stretched-image uxul-world::|tulip|))
+    (setf (gethash 'uxul-world::door *leveleditor-images*) (stretched-image uxul-world::|door|))
+    (setf (gethash 'uxul-world::key *leveleditor-images*) (stretched-image uxul-world::|key|))
 ))
 
-(defun load-image-into-tk (png-base64)
+(defun load-image-into-tk (png)
   "return a tkobject with this image"
   (let ((name (ltk::create-name)))
     (ltk:format-wish "set ~A [ image create photo -data \"~A\" ]"
-		     name png-base64)
+		     name (base64-encode-byteseq png))
     (make-instance 'ltk:tkobject :name name)))
 
 (defun config-button-image (button tkobject)
@@ -49,7 +67,7 @@ form (x y object)."
     ret))
 
 (defun level-editor (&optional (level nil) (width 16) (height 16))
-  (prepare-base64-images)
+  (prepare-images)
   (let ((item-table (make-hash-table :test 'equal)))
     ;;initialize given level
     (dolist (item level)
@@ -71,7 +89,7 @@ form (x y object)."
 	   (current-upper-left (cons 0 0))
 	   (current-chosen-object 'uxul)
 	   (objects-and-arrows (make-instance 'ltk:frame))
-	   (grid-frame (make-instance 'ltk:toplevel))
+	   (grid-frame (make-instance 'ltk:frame))
 	   (object-frame (make-instance 'ltk:frame :master objects-and-arrows))
 	   (arrow-frame (make-instance 'ltk:frame :master objects-and-arrows))
 	   (right-button (make-instance 'ltk:button :text ">"

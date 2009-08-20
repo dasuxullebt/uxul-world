@@ -23,7 +23,10 @@
     (setf (gethash 'uxul-world::gray-stone *leveleditor-images*) (stretched-base64-image uxul-world::|gray_stone|))
     (setf (gethash 'uxul-world::brown-stone *leveleditor-images*) (stretched-base64-image uxul-world::|brown_stone|))
     (setf (gethash 'uxul-world::empty *leveleditor-images*) (stretched-base64-image uxul-world::|empty|))
-    (setf (gethash 'uxul-world::tulip *leveleditor-images*) (stretched-base64-image uxul-world::|tulip|))))
+    (setf (gethash 'uxul-world::tulip *leveleditor-images*) (stretched-base64-image uxul-world::|tulip|))
+    (setf (gethash 'uxul-world::door *leveleditor-images*) (stretched-base64-image uxul-world::|door|))
+    (setf (gethash 'uxul-world::key *leveleditor-images*) (stretched-base64-image uxul-world::|key|))
+))
 
 (defun load-image-into-tk (png-base64)
   "return a tkobject with this image"
@@ -63,6 +66,8 @@ form (x y object)."
 	   (brown-stone (load-image-into-tk (gethash 'uxul-world::brown-stone *leveleditor-images*)))
 	   (empty (load-image-into-tk (gethash 'uxul-world::empty *leveleditor-images*)))
 	   (tulip (load-image-into-tk (gethash 'uxul-world::tulip *leveleditor-images*)))
+	   (key (load-image-into-tk (gethash 'uxul-world::key *leveleditor-images*)))
+	   (door (load-image-into-tk (gethash 'uxul-world::door *leveleditor-images*)))
 	   (current-upper-left (cons 0 0))
 	   (current-chosen-object 'uxul)
 	   (objects-and-arrows (make-instance 'ltk:frame))
@@ -103,6 +108,10 @@ form (x y object)."
 					:master object-frame))
 	   (leaf-button (make-instance 'ltk:button :text ""
 				       :master object-frame))
+	   (key-button (make-instance 'ltk:button :text ""
+				       :master object-frame))
+	   (door-button (make-instance 'ltk:button :text ""
+				       :master object-frame))
 	   (btns (make-array (list width height) :adjustable nil :element-type 'ltk:button)))
 	(labels ((redraw-button (i j)
 		   "Redraw Button (i, j)"
@@ -131,6 +140,10 @@ form (x y object)."
 			(config-button-image cbtn empty))
 		       ((eq cval 'uxul-world::tulip)
 			(config-button-image cbtn tulip))
+		       ((eq cval 'uxul-world::door)
+			(config-button-image cbtn door))
+		       ((eq cval 'uxul-world::key)
+			(config-button-image cbtn key))
 		       ((eq cval 'uxul-world::uxul)
 			(config-button-image cbtn uxul)))))
 		 (redraw-buttons ()
@@ -142,10 +155,10 @@ form (x y object)."
 		   (let ((current-upper-x (car current-upper-left))
 			 (current-upper-y (cdr current-upper-left)))
 		     (cond
-		       ((eq current-chosen-object 'burning-marshmallow)
+		       ((eq current-chosen-object 'uxul-world::burning-marshmallow)
 			(setf (gethash (cons (+ i current-upper-x)
 					     (+ j current-upper-y))
-				       item-table) 'burning-marshmallow))
+				       item-table) 'uxul-world::burning-marshmallow))
 		       (t
 			(setf (gethash (cons (+ i current-upper-x)
 					     (+ j current-upper-y))
@@ -221,6 +234,18 @@ form (x y object)."
 	  (setf (ltk:command tulip-button)
 			     #'(lambda ()
 				 (setf current-chosen-object 'uxul-world::tulip)))
+
+	  (ltk:grid key-button 0 9)
+	  (config-button-image key-button key)
+	  (setf (ltk:command key-button)
+			     #'(lambda ()
+				 (setf current-chosen-object 'uxul-world::key)))
+
+	  (ltk:grid door-button 0 10)
+	  (config-button-image door-button door)
+	  (setf (ltk:command door-button)
+			     #'(lambda ()
+				 (setf current-chosen-object 'uxul-world::door)))
 
 	  (ltk:grid object-frame 0 0)
 	  (ltk:pack objects-and-arrows)

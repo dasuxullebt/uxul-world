@@ -57,8 +57,8 @@
   (ltk:format-wish "~A configure -image $~A" (ltk::widget-path button) (ltk::name tkobject)))
 
 (defun item-table-to-list (item-table)
-  "Special Function vor level-editor. Returns a list of lists of the
-form (x y object)."
+  "Special Function for level-editor. Returns a list of lists of the
+form (x y object arg1 arg2 ...)."
   (let ((ret nil))
     (maphash #'(lambda (key val)
 		 (when val
@@ -192,19 +192,19 @@ form (x y object)."
 	  (ltk:grid left-button 1 0)
 	  (setf (ltk:command left-button) #'(lambda () (move-field-about 0 1)))
 	  (ltk:grid lleft-button 2 0)
-	  (setf (ltk:command lleft-button) #'(lambda () (move-field-about 0 15)))
+	  (setf (ltk:command lleft-button) #'(lambda () (move-field-about 0 (- width 1))))
 	  (ltk:grid right-button 1 2)
 	  (setf (ltk:command right-button) #'(lambda () (move-field-about 0 -1)))
 	  (ltk:grid rright-button 0 2)
-	  (setf (ltk:command rright-button) #'(lambda () (move-field-about 0 -15)))
+	  (setf (ltk:command rright-button) #'(lambda () (move-field-about 0 (- 1 width))))
 	  (ltk:grid up-button 0 1)
 	  (setf (ltk:command up-button) #'(lambda () (move-field-about 1 0)))
 	  (ltk:grid uup-button 0 0)
-	  (setf (ltk:command uup-button) #'(lambda () (move-field-about 15 0)))
+	  (setf (ltk:command uup-button) #'(lambda () (move-field-about (- width 1) 0)))
 	  (ltk:grid down-button 2 1)
 	  (setf (ltk:command down-button) #'(lambda () (move-field-about -1 0)))
 	  (ltk:grid ddown-button 2 2)
-	  (setf (ltk:command ddown-button) #'(lambda () (move-field-about -15 0)))
+	  (setf (ltk:command ddown-button) #'(lambda () (move-field-about (- 1 width) 0)))
 
 	  (ltk:grid empty-button 0 0)
 	  (config-button-image empty-button empty)

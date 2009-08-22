@@ -62,7 +62,7 @@ form (x y object arg1 arg2 ...)."
   (let ((ret nil))
     (maphash #'(lambda (key val)
 		 (when val
-		   (push (list (car key) (cdr key) val) ret)))
+		   (push (concatenate 'list (list (car key) (cdr key)) val)  ret)))
 	     item-table)
     ret))
 
@@ -71,7 +71,7 @@ form (x y object arg1 arg2 ...)."
   (let ((item-table (make-hash-table :test 'equal)))
     ;;initialize given level
     (dolist (item level)
-      (setf (gethash (cons (car item) (cadr item)) item-table) (caddr item)))
+      (setf (gethash (cons (car item) (cadr item)) item-table) (cddr item)))
     
     (ltk:with-ltk ()
       (let*
@@ -108,6 +108,10 @@ form (x y object arg1 arg2 ...)."
 				     :master arrow-frame))
 	   (ddown-button (make-instance 'ltk:button :text "\\\\//"
 				       :master arrow-frame))
+	   (argument1-entry (make-instance 'ltk:entry :text ""
+					   :master object-frame))
+	   (argument2-entry (make-instance 'ltk:entry :text ""
+					   :master object-frame))
 	   (uxul-button (make-instance 'ltk:button :text ""
 				       :master object-frame))
 	   (nasobem-button (make-instance 'ltk:button :text ""
@@ -172,15 +176,11 @@ form (x y object arg1 arg2 ...)."
 		 (react (i j)
 		   (let ((current-upper-x (car current-upper-left))
 			 (current-upper-y (cdr current-upper-left)))
-		     (cond
-		       ((eq current-chosen-object 'uxul-world::burning-marshmallow)
-			(setf (gethash (cons (+ i current-upper-x)
-					     (+ j current-upper-y))
-				       item-table) 'uxul-world::burning-marshmallow))
-		       (t
-			(setf (gethash (cons (+ i current-upper-x)
-					     (+ j current-upper-y))
-				       item-table) current-chosen-object)))
+		     (setf (gethash (cons (+ i current-upper-x)
+					  (+ j current-upper-y))
+				    item-table)
+			   (and current-chosen-object
+				(list current-chosen-object (ltk:text argument1-entry) (ltk:text argument2-entry))))
 		     (redraw-button i j)))
 		 (move-field-about (i j)
 		   (let ((current-upper-y (car current-upper-left))
@@ -205,6 +205,9 @@ form (x y object arg1 arg2 ...)."
 	  (setf (ltk:command down-button) #'(lambda () (move-field-about -1 0)))
 	  (ltk:grid ddown-button 2 2)
 	  (setf (ltk:command ddown-button) #'(lambda () (move-field-about (- 1 width) 0)))
+
+	  (ltk:grid argument1-entry 1 0 :columnspan 5)
+	  (ltk:grid argument2-entry 1 6 :columnspan 5)
 
 	  (ltk:grid empty-button 0 0)
 	  (config-button-image empty-button empty)

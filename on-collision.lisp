@@ -28,8 +28,7 @@
     ((moving-rectangle player)
      (standing-rectangle door)
      (collision collision))
-
-  (cond ((find (dungeon standing-rectangle) (keys moving-rectangle))
+  (cond ((find-if #'(lambda (x) (string= x (dungeon standing-rectangle))) (keys moving-rectangle))
 	 (setf (keys moving-rectangle) (delete (dungeon standing-rectangle) (keys moving-rectangle) :count 1))
 	 (setf (visible standing-rectangle) nil)
 	 (setf (active standing-rectangle) nil)

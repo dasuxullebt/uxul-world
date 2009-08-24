@@ -147,6 +147,16 @@
 	   (add-object (make-instance 'flying-nasobem
 				      :x (* 128 x)
 				      :y (* 128 y)) room))
+	  ((eq type 'key)
+	   (add-object (make-instance 'key
+				      :x (* 128 x)
+				      :y (* 128 y)
+				      :dungeon arg1) room))
+	  ((eq type 'door)
+	   (add-object (make-instance 'door
+				      :x (* 128 x)
+				      :y (* 128 y)
+				      :dungeon arg1) room))
 	  ((eq type 'burning-marshmallow)
 	   (add-object (make-instance 'burning-marshmallow
 				      :x (* 128 x)

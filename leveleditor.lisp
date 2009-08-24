@@ -44,6 +44,7 @@
     (setf (gethash 'uxul-world::tulip *leveleditor-images*) (stretched-image uxul-world::|tulip|))
     (setf (gethash 'uxul-world::door *leveleditor-images*) (stretched-image uxul-world::|door|))
     (setf (gethash 'uxul-world::key *leveleditor-images*) (stretched-image uxul-world::|key|))
+    (setf (gethash 'uxul-world::anchor *leveleditor-images*) (stretched-image uxul-world::|anchor|))
 ))
 
 (defun load-image-into-tk (png)
@@ -67,12 +68,16 @@ form (x y object arg1 arg2 ...)."
     ret))
 
 (defun level-editor (&optional (level nil) (width 16) (height 16))
+  ;; hack. swap "width" and "height". (too lazy to change it properly by now)
+  (let ((nilpferd width))
+    (setf width height)
+    (setf height nilpferd))
+
   (prepare-images)
   (let ((item-table (make-hash-table :test 'equal)))
     ;;initialize given level
     (dolist (item level)
-      (setf (gethash (cons (car item) (cadr item)) item-table) (cddr item)))
-    
+      (setf (gethash (cons (car item) (cadr item)) item-table) (cddr item)))   
     (ltk:with-ltk ()
       (let*
 	  ((uxul (load-image-into-tk (gethash 'uxul-world::uxul *leveleditor-images*)))
@@ -86,6 +91,8 @@ form (x y object arg1 arg2 ...)."
 	   (tulip (load-image-into-tk (gethash 'uxul-world::tulip *leveleditor-images*)))
 	   (key (load-image-into-tk (gethash 'uxul-world::key *leveleditor-images*)))
 	   (door (load-image-into-tk (gethash 'uxul-world::door *leveleditor-images*)))
+	   (anchor (load-image-into-tk (gethash 'uxul-world::anchor *leveleditor-images*)))
+	   (anchors (make-hash-table :test 'equal))
 	   (current-upper-left (cons 0 0))
 	   (current-chosen-object 'uxul)
 	   (objects-and-arrows (make-instance 'ltk:frame))
@@ -134,6 +141,8 @@ form (x y object arg1 arg2 ...)."
 				       :master object-frame))
 	   (door-button (make-instance 'ltk:button :text ""
 				       :master object-frame))
+	   (anchor-button (make-instance 'ltk:button :text ""
+					 :master object-frame))
 	   (btns (make-array (list width height) :adjustable nil :element-type 'ltk:button)))
 	(labels ((redraw-button (i j)
 		   "Redraw Button (i, j)"
@@ -142,9 +151,11 @@ form (x y object arg1 arg2 ...)."
 			  (cval (gethash (cons (+ i current-upper-x)
 					       (+ j current-upper-y))
 					item-table nil))
+			  (cval2 nil)
 			 (cbtn (aref btns i j)))
-		     (if (listp cval)
-			 (setf cval (car cval)))
+		     (when (listp cval)
+		       (setf cval2 cval)
+		       (setf cval (car cval)))
 		     (cond
 		       ((eq cval 'uxul-world::leaf)
 			(config-button-image cbtn leaf))
@@ -166,6 +177,11 @@ form (x y object arg1 arg2 ...)."
 			(config-button-image cbtn door))
 		       ((eq cval 'uxul-world::key)
 			(config-button-image cbtn key))
+		       ((eq cval 'uxul-world::anchor)
+			(format t "fuck")
+			(format t (cadr cval2))
+			(write (gethash (cadr cval2) anchors))
+			(config-button-image cbtn (gethash (cadr cval2) anchors)))
 		       ((eq cval 'uxul-world::uxul)
 			(config-button-image cbtn uxul)))))
 		 (redraw-buttons ()
@@ -176,6 +192,21 @@ form (x y object arg1 arg2 ...)."
 		 (react (i j)
 		   (let ((current-upper-x (car current-upper-left))
 			 (current-upper-y (cdr current-upper-left)))
+		     (cond
+		       ((eql current-chosen-object 'uxul-world::anchor)
+			(cond
+			  ((string= (ltk:text argument1-entry) "")
+			   (ltk:do-msg "Please give an argument in the left textbox")
+			   (return-from react))
+			  ((gethash (ltk:text argument1-entry) anchors nil)
+			   (ltk:do-msg "Warning: You already set an
+			   anchor with the same dungeon-name. Make
+			   sure that you remove one of them. Behavior
+			   is not specified in this case and may
+			   change."))
+			  (t
+			   (setf (gethash (ltk:text argument1-entry) anchors)
+				 (load-image-into-tk (annotated-image (gethash 'uxul-world::anchor *leveleditor-images*) (ltk:text argument1-entry))))))))
 		     (setf (gethash (cons (+ i current-upper-x)
 					  (+ j current-upper-y))
 				    item-table)
@@ -267,6 +298,12 @@ form (x y object arg1 arg2 ...)."
 	  (setf (ltk:command door-button)
 			     #'(lambda ()
 				 (setf current-chosen-object 'uxul-world::door)))
+
+	  (ltk:grid anchor-button 0 11)
+	  (config-button-image anchor-button anchor)
+	  (setf (ltk:command anchor-button)
+			     #'(lambda ()
+				 (setf current-chosen-object 'uxul-world::anchor)))
 
 	  (ltk:grid object-frame 0 0)
 	  (ltk:pack objects-and-arrows)

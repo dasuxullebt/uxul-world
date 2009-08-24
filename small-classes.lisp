@@ -2,6 +2,14 @@
 
 (in-package :uxul-world)
 
+(defclass anchor (game-object)
+  ((dungeon :initform nil
+	    :initarg :dungeon
+	    :accessor dungeon))
+   (:documentation "This object ist just to make it easier to handle
+   positions in the game, i.e. for bounding-rects for
+   burning-marshmallows, etc."))
+
 (defclass leaf (bottom)
   ((animation :initarg :animation
 	      :accessor animation

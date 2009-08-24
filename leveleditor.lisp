@@ -205,7 +205,8 @@ form (x y object arg1 arg2 ...)."
 							   "Symbolname: \"" (symbol-name (car sym)) "\"~%"
 							   "First argument: \"" (cadr sym) "\"~%"
 							   "Second argument: \"" (caddr sym) "\"")))
-			      (ltk:do-msg "There doesnt seem to be anything here."))))
+			      (ltk:do-msg "There doesnt seem to be anything here."))
+			  (return-from react)))
 		       ((eql current-chosen-object 'uxul-world::anchor)
 			(cond
 			  ((string= (ltk:text argument1-entry) "")

@@ -143,6 +143,8 @@ form (x y object arg1 arg2 ...)."
 				       :master object-frame))
 	   (anchor-button (make-instance 'ltk:button :text ""
 					 :master object-frame))
+	   (info-button (make-instance 'ltk:button :text "Info"
+				       :master object-frame))
 	   (btns (make-array (list width height) :adjustable nil :element-type 'ltk:button)))
 	(labels ((redraw-button (i j)
 		   "Redraw Button (i, j)"
@@ -193,6 +195,17 @@ form (x y object arg1 arg2 ...)."
 		   (let ((current-upper-x (car current-upper-left))
 			 (current-upper-y (cdr current-upper-left)))
 		     (cond
+		       ((eql current-chosen-object :info)
+			(let ((sym (gethash (cons (+ i current-upper-x)
+					  (+ j current-upper-y))
+				    item-table nil)))
+			  (if sym
+			      (ltk:do-msg
+				  (format nil (concatenate 'string
+							   "Symbolname: \"" (symbol-name (car sym)) "\"~%"
+							   "First argument: \"" (cadr sym) "\"~%"
+							   "Second argument: \"" (caddr sym) "\"")))
+			      (ltk:do-msg "There doesnt seem to be anything here."))))
 		       ((eql current-chosen-object 'uxul-world::anchor)
 			(cond
 			  ((string= (ltk:text argument1-entry) "")
@@ -237,8 +250,11 @@ form (x y object arg1 arg2 ...)."
 	  (ltk:grid ddown-button 2 2)
 	  (setf (ltk:command ddown-button) #'(lambda () (move-field-about (- 1 width) 0)))
 
-	  (ltk:grid argument1-entry 1 0 :columnspan 5)
-	  (ltk:grid argument2-entry 1 6 :columnspan 5)
+	  (ltk:grid argument1-entry 1 0 :columnspan 4)
+	  (ltk:grid argument2-entry 1 5 :columnspan 4)
+	  (ltk:grid info-button 1 9 :columnspan 2)
+	  (setf (ltk:command info-button)
+		#'(lambda () (setf current-chosen-object :info)))
 
 	  (ltk:grid empty-button 0 0)
 	  (config-button-image empty-button empty)

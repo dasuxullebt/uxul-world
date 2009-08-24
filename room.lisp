@@ -118,8 +118,9 @@
 	    (x (cadr item))
 	    (type (caddr item))
 	    (arg1 (cadddr item))
-	    (arg2 (caddddr item)))
+	    (arg2 (car (cddddr item))))
 	(cond
+	  ((eq type 'anchor))
 	  ((eq type 'uxul)
 	   (setf (x player) (* 128 x))
 	   (setf (y player) (* 128 y))
@@ -146,6 +147,17 @@
 	   (add-object (make-instance 'flying-nasobem
 				      :x (* 128 x)
 				      :y (* 128 y)) room))
+	  ((eq type 'burning-marshmallow)
+	   (add-object (make-instance 'burning-marshmallow
+				      :x (* 128 x)
+				      :y (* 128 y)
+				      :inner-rectangle
+				      (and (not (string= arg1 "")) (not (string= arg2 ""))
+					   (list
+					    (* 128 (car (gethash arg1 anchor-table)))
+					    (* 128 (cdr (gethash arg1 anchor-table)))
+					    (* 128 (1+ (car (gethash arg2 anchor-table))))
+					    (* 128 (1+ (cdr (gethash arg2 anchor-table))))))) room))
 	  (T
 	   (add-object (make-instance type
 				      :x (* 128 x)

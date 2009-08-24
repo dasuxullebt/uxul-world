@@ -104,40 +104,50 @@
 			    :graphic-centralizer player
 			    :key-listener player
 			    :key-up-function #'(lambda (key) (on-key-up player key))
-			    :key-down-function #'(lambda (key) (on-key-down player key)))))
-  (dolist (item item-list)
-    (let ((y (car item))
-	  (x (cadr item))
-	  (type (caddr item)))
-      (cond
-	((eq type 'uxul)
-	 (setf (x player) (* 128 x))
-	 (setf (y player) (* 128 y))
-	 (add-object player room))
-	((eq type 'tulip)
-	 (add-object (make-instance 'tulip
-				    :x (* 128 x)
-				    :y (* 128 y)) room))
-	((eq type 'brown-stone)
-	 (add-object (make-instance 'stone
-				    :animation (make-animation 0 |brown_stone|)
-				    :x (* 128 x)
-				    :y (* 128 y)) room))
-	((eq type 'gray-stone)
-	 (add-object (make-instance 'stone
-				    :animation (make-animation 0 |gray_stone|)
-				    :x (* 128 x)
-				    :y (* 128 y)) room))
-	((eq type 'nasobem)
-	 (add-object (make-instance 'simple-enemy
-				    :x (* 128 x)
-				    :y (* 128 y)) room))
-	((eq type 'blue-nasobem)
-	 (add-object (make-instance 'flying-nasobem
-				    :x (* 128 x)
-				    :y (* 128 y)) room))
-	(T
-	 (add-object (make-instance type
-				 :x (* 128 x)
-				 :y (* 128 y)) room)))))
-  room))
+			    :key-down-function #'(lambda (key) (on-key-down player key))))
+       (anchor-table (make-hash-table :test 'equal)))
+    (dolist (item item-list)
+      (let ((y (car item))
+	    (x (cadr item))
+	    (type (caddr item))
+	    (arg1 (cadddr item)))
+	(when (eq type 'anchor)
+	  (setf (gethash arg1 anchor-table) (cons x y)))))
+    (dolist (item item-list)
+      (let ((y (car item))
+	    (x (cadr item))
+	    (type (caddr item))
+	    (arg1 (cadddr item))
+	    (arg2 (caddddr item)))
+	(cond
+	  ((eq type 'uxul)
+	   (setf (x player) (* 128 x))
+	   (setf (y player) (* 128 y))
+	   (add-object player room))
+	  ((eq type 'tulip)
+	   (add-object (make-instance 'tulip
+				      :x (* 128 x)
+				      :y (* 128 y)) room))
+	  ((eq type 'brown-stone)
+	   (add-object (make-instance 'stone
+				      :animation (make-animation 0 |brown_stone|)
+				      :x (* 128 x)
+				      :y (* 128 y)) room))
+	  ((eq type 'gray-stone)
+	   (add-object (make-instance 'stone
+				      :animation (make-animation 0 |gray_stone|)
+				      :x (* 128 x)
+				      :y (* 128 y)) room))
+	  ((eq type 'nasobem)
+	   (add-object (make-instance 'simple-enemy
+				      :x (* 128 x)
+				      :y (* 128 y)) room))
+	  ((eq type 'blue-nasobem)
+	   (add-object (make-instance 'flying-nasobem
+				      :x (* 128 x)
+				      :y (* 128 y)) room))
+	  (T
+	   (add-object (make-instance type
+				      :x (* 128 x)
+				      :y (* 128 y)) room)))))
+    room))

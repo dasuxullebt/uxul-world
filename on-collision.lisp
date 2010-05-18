@@ -77,7 +77,11 @@
   (setf (autojump moving-rectangle) 5)
   (player-hits-enemy moving-rectangle
 		     standing-rectangle
-		     collision))
+		     collision)
+  (setf (colliding standing-rectangle) nil)
+  (move-about moving-rectangle (desired-movement collision))
+  (setf (colliding standing-rectangle) t)
+)
 
 (defmethod on-collision
     ((moving-rectangle player)
@@ -225,4 +229,8 @@
 		  collision)
   (enemy-hits-player moving-rectangle
 		     standing-rectangle
-		     collision))
+		     collision)
+  (setf (colliding standing-rectangle) nil)
+  (move-about moving-rectangle (desired-movement collision))
+  (setf (colliding standing-rectangle) t)
+)

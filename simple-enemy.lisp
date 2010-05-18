@@ -34,17 +34,15 @@
 	   (setf (activated obj) T))))))
 
 (defun simple-enemy-and-player (player enemy)
-  (decf (power player))
-  (setf (active enemy) nil)
-  (setf (visible enemy) nil)
-  (setf (colliding enemy) nil))
+  (decf (power player)))
 
 (defmethod player-hits-enemy ((player player) (enemy simple-enemy) &rest args)
   (cond
     ((eql (direction (car args)) :DOWN)
      (setf (animation enemy) (flat-animation enemy))
      (setf (active enemy) nil)
-     (setf (colliding enemy) nil))
+     (setf (colliding enemy) nil)
+     (setf (listen-to player) (remove enemy (listen-to player))))
     (T
      (simple-enemy-and-player player enemy))))
 

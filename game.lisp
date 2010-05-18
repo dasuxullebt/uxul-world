@@ -11,7 +11,9 @@
   (start-game :room-function
 	      #'(lambda () (create-room-from-item-list item-list))))
 
-(defun start-game (&key (music nil) room-function (15-fps nil))
+(defun start-game (&key (music nil)
+		   (room-function #'make-testing-room)
+		   (15-fps nil))
   "Start the Game: Call room-function for getting the room-object to
 run. Music is ignored so far. 15-fps makes only every second frame be
 drawn (for very slow computers)"

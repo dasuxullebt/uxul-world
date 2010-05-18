@@ -101,12 +101,13 @@
 	(setf (animation obj) (slot-value obj 'rd-animation)))))))
 
 
+; already defined in simple-enemy.lisp - possibly a bug?
 
-(defun simple-enemy-and-player (player enemy)
-  (decf (power player))
-  (setf (active enemy) nil)
-  (setf (visible enemy) nil)
-  (setf (colliding enemy) nil))
+;; (defun simple-enemy-and-player (player enemy)
+;;   (decf (power player))
+;;   (setf (active enemy) nil)
+;;   (setf (visible enemy) nil)
+;;   (setf (colliding enemy) nil))
 
 (defmethod player-hits-enemy ((player player) (enemy burning-marshmallow) &rest args)
   (declare (ignore args))

@@ -1,12 +1,19 @@
-This Game is under development and may not be ready to use yet.
+Last Updated 2010/05/19
 
-It depends on Lispbuilder-SDL (SVN-Revision 759 should work), LTK and lisp-magick.
+This Game is under development and may not be ready to use yet. I will
+try to keep this Readme current, but cant promise it.
 
-To start the leveleditor, do (level-editor), it will return a sequence. Save this sequence
-somewhere, say *a*. Then to play it, hit
+It depends on Lispbuilder-SDL (SVN-Revision 759 should work), LTK and
+lisp-magick.
+
+To start a testing-level, do (start-game).
+
+To start the leveleditor, do (level-editor), it will return a
+sequence. Save this sequence somewhere, say *a*. Then to play it, hit
 
 (start-game :room-function #'(lambda () (create-room-from-item-list *a*)))
 
-To edit *a* again, do (level-editor *a*), and your edited level will be returned.
+To edit *a* again, do (level-editor *a*), and your edited level will
+be returned.
 
-I cant promis that all revisions I will make will work.
+I cant promise that all revisions I will make will work.

@@ -33,6 +33,7 @@
 (defun prepare-images (&optional (care-about-initialization *leveleditor-images*))
   (when (not care-about-initialization)
     (setf *leveleditor-images* (make-hash-table))
+    (uxul-world::init-files)
     (setf (gethash 'uxul-world::uxul *leveleditor-images*) (stretched-image uxul-world::|uxul_small1|))
     (setf (gethash 'uxul-world::leaf *leveleditor-images*) (stretched-image uxul-world::|leaf|))
     (setf (gethash 'uxul-world::nasobem *leveleditor-images*) (stretched-image uxul-world::|nasobem|))

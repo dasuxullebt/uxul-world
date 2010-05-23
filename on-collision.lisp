@@ -41,6 +41,16 @@
 	 (setf (maycontjump moving-rectangle) nil)))
   (collide-blocks moving-rectangle standing-rectangle collision))
 
+(defmethod on-collision
+    ((moving-rectangle player)
+     (standing-rectangle teleporter)
+     (collision collision))
+  ;; make rectangle active to check for overlapping
+  (setf (active standing-rectangle) T)
+  ;; walk through
+  (setf (colliding standing-rectangle) nil)
+  (move-about moving-rectangle (desired-movement collision))
+  (setf (colliding standing-rectangle) t))
 
 (defmethod on-collision
     ((moving-rectangle player)

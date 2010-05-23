@@ -37,6 +37,10 @@ for. Classes: ~A ~A"
   (must-be-listened-by obj place 'player 'moving-enemy 'moving-item)
   (call-next-method))
 
+(defmethod add-object ((obj teleporter) (place room))
+  (must-be-listened-by obj place 'player)
+  (call-next-method))
+
 (defmethod add-object ((obj moving-enemy) (place room))
   (i-wanna-listen-to obj place 'player 'stone)
   (must-be-listened-by obj place 'player)

@@ -10,4 +10,5 @@
   uxul-world::room uxul-world::stone uxul-world::xy-coordinates
   uxul-world::bottom uxul-world::moving-enemy
   uxul-world::standing-enemy uxul-world::moving-item
-  uxul-world::standing-item uxul-world::game-object-with-animation))
+  uxul-world::standing-item uxul-world::game-object-with-animation
+  uxul-world::teleporter))

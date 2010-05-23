@@ -65,3 +65,32 @@
 	    :accessor dungeon
 	    :initform nil
 	    :documentation "To provide information in which room this door is.")))
+
+(defclass teleporter (game-object-with-animation)
+  ((animation :initarg :animation
+	      :accessor :animation
+	      :initform (make-animation 0 |teleporter|))
+   (width :initarg :width
+	  :accessor width
+	  :initform 128)
+   (height :initarg :height
+	   :accessor height
+	   :initform 128)
+   (next-room-function :initarg :next-room-function
+		       :accessor next-room-function
+		       :initform (lambda () *current-room*))))
+
+(defmethod invoke ((obj teleporter))
+  (let
+      ((player (car (get-objects *current-room* 'player))))
+    (cond
+      ((rectangles-overlap (x obj) (y obj)
+			   (+ (x obj) (width obj))
+			   (+ (y obj) (height obj))
+			   (x player) (y player)
+			   (+ (x player) (width player))
+			   (+ (y player) (height player)))
+       (if (key-pressed-up player)
+	   ;; change the room
+	   (setf *current-room* (funcall (next-room-function obj)))))
+      (T (setf (active obj) nil)))))

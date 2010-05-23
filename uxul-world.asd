@@ -11,8 +11,8 @@
 				 #:cl-fad
                                  #:lispbuilder-sdl-image)
   :components ((:file "uxul-world")
-               (:file "macros")
                (:file "constants")
+               (:file "macros")
                (:file "xy-coordinates")
                (:file "collision")
                (:file "files")

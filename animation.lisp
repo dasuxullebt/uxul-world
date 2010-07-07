@@ -4,6 +4,9 @@
 
 (in-package :uxul-world)
 
+(defparameter *zoom-ash* -1)
+(defmacro zoom-trans (x) `(ash ,x *zoom-ash*))
+
 (defparameter *graphics-table* nil)
 
 ;; the functions may assume that the contents of a graphics-file -
@@ -11,11 +14,28 @@
 ;; graphics with an equivalent path any time you load an image.
 
 (defclass animation (xy-coordinates)
-  ((images :initarg :images
-		     :initform (make-array (list 0) :element-type 'sdl:surface)
-		     :accessor images
-;		     :type (simple-array 'sdl:surface (*))
-		     :documentation "Array with the images")
+  (
+;;   (images :initarg :images
+;; 		     :initform (make-array (list 0) :element-type 'sdl:surface)
+;; 		     :accessor images
+;; ;		     :type (simple-array 'sdl:surface (*))
+;; 		     :documentation "Array with the images")
+   (images-2x :initarg :images-2x
+	      :initform (make-array (list 0) :element-type 'sdl:surface)
+	      :accessor images-2x
+	      :documentation "Array of double-sized images")
+   (images-1x :initarg :images-1x
+	      :initform (make-array (list 0) :element-type 'sdl:surface)
+	      :accessor images-1x
+	      :documentation "Array of normal-sized images")
+   (images-.5x :initarg :images-.5x
+	       :initform (make-array (list 0) :element-type 'sdl:surface)
+	       :accessor images-.5x
+	       :documentation "Array of half-sized images")
+   (images-.25x :initarg :images-.25x
+		:initform (make-array (list 0) :element-type 'sdl:surface)
+		:accessor images-.25x
+		:documentation "Array of quarter-sized images")	      
    (sprite-image-number :initform 0
 			:initarg :sprite-image-number
 			:accessor sprite-image-number
@@ -55,6 +75,18 @@ will be used to minimize the number of file-accesses for loading
 animations. For any animation created from a file by the api from
 below, this will refer to an animation in the *graphics-table*." )))
 
+(defmethod images ((obj animation))
+  (cond
+    ((= *zoom-ash* 0)
+     (images-2x obj))
+    ((= *zoom-ash* -1)
+     (images-1x obj))
+    ((= *zoom-ash* -2)
+     (images-.5x obj))
+    ((= *zoom-ash* -3)
+     (images-.25x obj))))
+
+
 (defmethod draw ((obj animation))
   (when (not (<= (sprite-delay obj) 0)) ;<=, because -a means "paused,
 					;but a is the delay when
@@ -66,8 +98,8 @@ below, this will refer to an animation in the *graphics-table*." )))
       (setf (sprite-image-number obj) (mod (+ 1 (sprite-image-number obj)) (length (images obj))))))
   (when (visible obj)
     (sdl:draw-surface-at-* (elt (images obj) (sprite-image-number obj))
-			   (+ *current-translation-x* (round (x obj)))
-			   (+ *current-translation-y* (round (y obj))))))
+			   (zoom-trans (+ *current-translation-x* (round (x obj))))
+			   (zoom-trans (+ *current-translation-y* (round (y obj)))))))
 
 ;additional methods to make life easier
 (defmethod pause ((obj animation))
@@ -112,10 +144,28 @@ reference, if the current filename already exists."
   "Create an animation from the list of animation-names given in the
 images-variable."
   (make-instance 'animation
-		 :images (mapcar
-			  #'(lambda (x)
-			      (sdl:convert-surface :surface (sdl-image:load-image
-			       x
-			       :image-type :PNG :alpha 1 )))
-				 image-list)
+		 :images-2x (mapcar
+			     #'(lambda (x)
+				 (sdl:convert-surface :surface (sdl-image:load-image
+								(car x)
+								:image-type :PNG :alpha 1 )))
+			     image-list)
+		 :images-1x (mapcar
+			     #'(lambda (x)
+				 (sdl:convert-surface :surface (sdl-image:load-image
+								(cadr x)
+								:image-type :PNG :alpha 1 )))
+			     image-list)
+		 :images-.5x (mapcar
+			     #'(lambda (x)
+				 (sdl:convert-surface :surface (sdl-image:load-image
+								(caddr x)
+								:image-type :PNG :alpha 1 )))
+			     image-list)
+		 :images-.25x (mapcar
+			     #'(lambda (x)
+				 (sdl:convert-surface :surface (sdl-image:load-image
+								(cadddr x)
+								:image-type :PNG :alpha 1 )))
+			     image-list)
 		 :sprite-delay frame-skip))

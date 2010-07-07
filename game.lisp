@@ -17,6 +17,7 @@
   "Start the Game: Call room-function for getting the room-object to
 run. Music is ignored so far. 15-fps makes only every second frame be
 drawn (for very slow computers)"
+  (sdl:set-video-driver "directx")
      (sdl:with-init (sdl:sdl-init-video sdl:sdl-init-audio)
        (sdl:window +screen-width+ +screen-height+
 		   :title-caption "Uxul World"
@@ -49,6 +50,12 @@ drawn (for very slow computers)"
 			    (cond
 			      ((sdl:key= key :SDL-KEY-ESCAPE)
 			       (sdl:push-quit-event))
+			      ((sdl:key= key :SDL-KEY-O)
+			       (setf *zoom-ash*
+				     (max -3 (1- *zoom-ash*))))
+			      ((sdl:key= key :SDL-KEY-I)
+			       (setf *zoom-ash*
+				     (min 0 (1+ *zoom-ash*))))
 			      (T
 			       (on-key-down *current-room* key))))
 	   (:key-up-event (:key key)

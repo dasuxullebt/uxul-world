@@ -10,7 +10,8 @@
   ((animation-translation :initarg :animation-translation
 			  :accessor animation-translation
 			  :initform (make-xy 0 0)
-			  :documentation "The translation of the animation")
+			  :documentation "The translation of the
+			  animation (in double zoom).")
    (animation :initarg :animation
 	      :accessor animation
 	      :documentation "The animation of this object")
@@ -55,9 +56,10 @@
 	 (+ (y obj) (height obj) (y bounds))
 	 (- *current-translation-x*)
 	 (- *current-translation-y*)
-	 (- +screen-width+ *current-translation-x*)
-	 (- +screen-height+ *current-translation-y*))
-	T)))
+	 (- (ash +screen-width+ (- *zoom-ash*)) *current-translation-x*)
+	 (- (ash +screen-height+ (- *zoom-ash*)) *current-translation-y*))
+	T))
+)
 
 
 

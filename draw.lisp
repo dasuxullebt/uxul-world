@@ -5,25 +5,26 @@
 (in-package :uxul-world)
 
 (defun draw-background (x-trans y-trans)
-  (let ((ani3 (car (images (make-animation 0 |background_test_layer_3|))))
-	(ani2 (car (images (make-animation 0 |background_test_layer_2|)))))
+  ;; (let ((ani3 (car (images (make-animation 0 |background_test_layer_3|))))
+;; 	(ani2 (car (images (make-animation 0 |background_test_layer_2|)))))
 
-    (loop for i from -1 to 16
-	 do (loop for j from -1 to 12
-		 do (progn
-		      (sdl:draw-surface-at-* ani2
-					     (+ (* i 64) (round
-							  (mod (/ x-trans 4) 64)))
-					     (+ (* j 64) (round
-							  (mod (/ y-trans 4) 64)))))))
-    (loop for i from -1 to 16
-	 do (loop for j from -1 to 12
-		 do 
-		 (sdl:draw-surface-at-* ani3
-					     (+ (* 64 i) (round
-							  (mod (/ x-trans 2) 64)))
-					     (+ (* 64 j) (round
-							  (mod (/ y-trans 2) 64))))))))
+;;     (loop for i from -1 to 16
+;; 	 do (loop for j from -1 to 12
+;; 		 do (progn
+;; 		      (sdl:draw-surface-at-* ani2
+;; 					     (+ (* i 64) (round
+;; 							  (mod (/ x-trans 4) 64)))
+;; 					     (+ (* j 64) (round
+;; 							  (mod (/ y-trans 4) 64)))))))
+;;     (loop for i from -1 to 16
+;; 	 do (loop for j from -1 to 12
+;; 		 do 
+;; 		 (sdl:draw-surface-at-* ani3
+;; 					     (+ (* 64 i) (round
+;; 							  (mod (/ x-trans 2) 64)))
+;; 					     (+ (* 64 j) (round
+;; 							  (mod (/ y-trans 2) 64)))))))
+  )
 
 (defmethod draw ((obj room))
   (let ((*current-translation-x*
@@ -33,7 +34,7 @@
 	    (- 800 (width obj)))
 	   (T
 	    (- 400 (x (graphic-centralizer obj)))))|#
-	 (- 400 (x (graphic-centralizer obj)))
+	 (- (ash 400 (- *zoom-ash*)) (x (graphic-centralizer obj)))
 	  )
 	(*current-translation-y*
 	 #|(cond
@@ -42,7 +43,7 @@
 	    (- 600 (height obj)))
 	   (T
 	    (- 300 (y (graphic-centralizer obj)))))|#
-	 (- 300 (y (graphic-centralizer obj)))
+	 (- (ash 300 (- *zoom-ash*)) (y (graphic-centralizer obj)))
 	  ))
     (draw-background *current-translation-x* *current-translation-y*)
     (dolist (image (get-objects obj 'uxul-world::game-object))

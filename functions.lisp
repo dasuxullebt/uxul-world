@@ -570,8 +570,9 @@ are not zero"
   
 
 (defun old-draw-rectangle (obj &key (r 0) (g 0) (b 0))
-  (sdl:draw-rectangle-* (+ *current-translation-x* (x obj))
-			(+ *current-translation-y* (y obj))
-			(width obj)
-			(height obj)
+  (declare (type game-object obj))
+  (sdl:draw-rectangle-* (zoom-trans (+ *current-translation-x* (x obj)))
+			(zoom-trans (+ *current-translation-y* (y obj)))
+			(zoom-trans (width obj))
+			(zoom-trans (height obj))
 			:color (sdl:color :r r :g g :b b)))

@@ -22,8 +22,9 @@ drawn (for very slow computers)"
        (sdl:window +screen-width+ +screen-height+
 		   :title-caption "Uxul World"
 		   :icon-caption "Uxul World"
+		   ;:opengl T
 		   :flags (logior sdl:sdl-hw-accel  sdl:sdl-hw-surface)
-		   ;:flags (logior sdl:sdl-hw-surface) #| sdl:sdl-fullscreen )|# 
+		   :flags (logior sdl:sdl-hw-surface) #| sdl:sdl-fullscreen )|# 
 )
        ;;(if music (sdl-mixer:OPEN-AUDIO :frequency 44100))
        (let ((*graphics-table* (make-hash-table :test #'equal)))

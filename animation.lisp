@@ -126,20 +126,6 @@ below, this will refer to an animation in the *graphics-table*." )))
   "rewind the animation"
   (setf (slot-value obj 'sprite-image-number) 0))
 
-#|(defun load-png-image (filename)
-  (sdl-image:load-image (gethash filename *file-table*) :image-type :PNG :alpha 1 )) ;; :alpha t))
-
-(defun hashed-load-image (filename)
-  "loads an image by its filename, if it wasnt loaded yet. returns a
-reference, if the current filename already exists."
-  (let ((ret (gethash filename *graphics-table* nil)))
-    (cond
-      (ret ret)
-      (T
-       (setf ret (load-png-image filename))
-       (setf (gethash filename *graphics-table*) ret)
-       ret))))|#
-
 (defun make-animation (frame-skip &rest image-list)
   "Create an animation from the list of animation-names given in the
 images-variable."
@@ -148,24 +134,24 @@ images-variable."
 			     #'(lambda (x)
 				 (sdl:convert-surface :surface (sdl-image:load-image
 								(car x)
-								:image-type :PNG :alpha 1 )))
+								:image-type :BMP :alpha 1 )))
 			     image-list)
 		 :images-1x (mapcar
 			     #'(lambda (x)
 				 (sdl:convert-surface :surface (sdl-image:load-image
 								(cadr x)
-								:image-type :PNG :alpha 1 )))
+								:image-type :BMP :alpha 1 )))
 			     image-list)
 		 :images-.5x (mapcar
 			     #'(lambda (x)
 				 (sdl:convert-surface :surface (sdl-image:load-image
 								(caddr x)
-								:image-type :PNG :alpha 1 )))
+								:image-type :BMP :alpha 1 )))
 			     image-list)
 		 :images-.25x (mapcar
 			     #'(lambda (x)
 				 (sdl:convert-surface :surface (sdl-image:load-image
 								(cadddr x)
-								:image-type :PNG :alpha 1 )))
+								:image-type :BMP :alpha 1 )))
 			     image-list)
 		 :sprite-delay frame-skip))

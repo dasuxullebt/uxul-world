@@ -14,6 +14,7 @@
   :components ((:file "uxul-world")
                (:file "constants")
                (:file "macros")
+	       (:file "bmp")
                (:file "xy-coordinates")
                (:file "collision")
                (:file "files")

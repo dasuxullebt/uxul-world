@@ -5,26 +5,28 @@
 (defparameter *leveleditor-images* nil)
 
 (defun stretched-image (img)
-  "Call ImageMagick to resize that file to 32x32."
-  (lisp-magick:with-magick-wand (mywand)
-    (lisp-magick::magick-read-image-blob mywand img)
-    (lisp-magick::magick-resize-image mywand 32 32 #x00000000 1d0)
-    (lisp-magick::magick-set-format mywand "gif")
-    (lisp-magick::magick-get-image-blob mywand)))
+  "Resize that file to 32x32 and convert it into a ppm."
+  ;; HAAAAAAAAAAAACK
+  (map '(vector (unsigned-byte 8)) #'char-code
+       (resized (resize-bmp-blob img 32 32))))
 
 (defun annotated-image (img ann)
   "Add a (lower-left) annotation."
-  (lisp-magick:with-magick-wand (mywand)
-    (lisp-magick::magick-read-image-blob mywand img)
-    (lisp-magick:with-drawing-wand (dw)
-      (lisp-magick:with-pixel-wand (pw :comp (255 255 255))
-	(lisp-magick::draw-set-text-under-color dw pw))
-      (lisp-magick:with-pixel-wand (pw :comp (255 0 0))
-	(lisp-magick::draw-set-fill-color dw pw))
-      (lisp-magick:draw-annotation dw (coerce 0 'double-float) (coerce 32 'double-float) ann)
-      (lisp-magick:magick-draw-image mywand dw))
-    (lisp-magick::magick-set-format mywand "gif")
-    (lisp-magick::magick-get-image-blob mywand)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;FIXME
+img
+
+;;   (lisp-magick:with-magick-wand (mywand)
+;;     (lisp-magick::magick-read-image-blob mywand img)
+;;     (lisp-magick:with-drawing-wand (dw)
+;;       (lisp-magick:with-pixel-wand (pw :comp (255 255 255))
+;; 	(lisp-magick::draw-set-text-under-color dw pw))
+;;       (lisp-magick:with-pixel-wand (pw :comp (255 0 0))
+;; 	(lisp-magick::draw-set-fill-color dw pw))
+;;       (lisp-magick:draw-annotation dw (coerce 0 'double-float) (coerce 32 'double-float) ann)
+;;       (lisp-magick:magick-draw-image mywand dw))
+;;     (lisp-magick::magick-set-format mywand "gif")
+;;     (lisp-magick::magick-get-image-blob mywand)))
+)
 
 (defun numbered-image (img num)
   "Annotate the image with a number."

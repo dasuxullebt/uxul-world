@@ -9,7 +9,7 @@
   :license "Copyright 2009 Christoph Senjak."
   :depends-on (#:lispbuilder-sdl #:closer-mop
 				 #:cl-fad
-                                 #:lispbuilder-sdl-image)
+                                 #:lispbuilder-sdl)
   :components ((:file "uxul-world")
                (:file "constants")
                (:file "macros")

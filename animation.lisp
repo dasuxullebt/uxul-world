@@ -132,26 +132,25 @@ images-variable."
   (make-instance 'animation
 		 :images-2x (mapcar
 			     #'(lambda (x)
-				 (sdl:convert-surface :surface (sdl-image:load-image
-								(car x)
-								:image-type :BMP :alpha 1 )))
+				 (sdl:convert-surface :surface (sdl:load-image
+								(car x) :alpha 1 )))
 			     image-list)
 		 :images-1x (mapcar
 			     #'(lambda (x)
-				 (sdl:convert-surface :surface (sdl-image:load-image
+				 (sdl:convert-surface :surface (sdl:load-image
 								(cadr x)
-								:image-type :BMP :alpha 1 )))
+								:alpha 1 )))
 			     image-list)
 		 :images-.5x (mapcar
 			     #'(lambda (x)
-				 (sdl:convert-surface :surface (sdl-image:load-image
+				 (sdl:convert-surface :surface (sdl:load-image
 								(caddr x)
-								:image-type :BMP :alpha 1 )))
+								:alpha 1 )))
 			     image-list)
 		 :images-.25x (mapcar
 			     #'(lambda (x)
-				 (sdl:convert-surface :surface (sdl-image:load-image
+				 (sdl:convert-surface :surface (sdl:load-image
 								(cadddr x)
-								:image-type :BMP :alpha 1 )))
+								:alpha 1 )))
 			     image-list)
 		 :sprite-delay frame-skip))

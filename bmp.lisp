@@ -1,7 +1,8 @@
+;;; -*- lisp -*-
+
+;;; Copyright 2010 Christoph Senjak
+
 (in-package :uxul-world)
-
-
-;; this should go into functions.lisp
 
 (defun intersection-interval (a b c d)
   "We assume a<b and c<d. Compute the intersection-interval between

@@ -4,11 +4,55 @@
 
 (defparameter *leveleditor-images* nil)
 
-(defun stretched-image (img)
-  "Resize that file to 32x32 and convert it into a ppm."
-  ;; HAAAAAAAAAAAACK
-  (map '(vector (unsigned-byte 8)) #'char-code
-       (resized (resize-bmp-blob img 32 32))))
+(defun bmp-to-gif (inblob)
+  "Convert BMP to Grayscale-Gif using skippy."
+  (let*
+      ((w (uxul-world::bmp-width inblob))
+       (h (uxul-world::bmp-height inblob))
+       (img (uxul-world::bmp-pixel-data inblob))
+       (color-table (skippy:make-color-table))
+       (colors
+	(let
+	    ((v (make-array '(256) :adjustable nil)))
+	  (dotimes (i 256)
+	    (setf (elt v i)
+	       (skippy:ensure-color (skippy:rgb-color i i i)  color-table)))
+	  v))
+       (grayscale (lambda (x)
+		    ;; 0 becomes transparent
+		    (cond
+		      ((< (elt x 3) 128) 0)
+		      (t (max 1
+			      (round
+			       (/ (+ (elt x 1) (elt x 2) (elt x 0)) 3)))))))
+       (image-data
+	(let ((id (skippy:make-image-data w h)))
+ 	  (dotimes (i w)
+	    (dotimes (j h)
+	      (setf (elt id (+ i (* w (- h j 1))))
+		    (elt colors
+			 (funcall grayscale
+				  (make-array '(4)
+					      :element-type '(unsigned-byte 8)
+					      :displaced-to img
+					      :displaced-index-offset
+					      (* 4 (+ i (* w j)))))))))
+	  id))
+       (image (skippy:make-image :width w :height h
+				 :image-data image-data
+				 :transparency-index 0))
+       (data-stream (skippy:make-data-stream
+		     :height h :width w
+		     :color-table color-table)))
+    (skippy:add-image image data-stream)
+    (flexi-streams:with-output-to-sequence (out)
+      (skippy:write-data-stream data-stream out))))
+      
+
+(defun stretched-image (imgs)
+  "Resize that image to 32x32 and convert it into a ppm."
+  (bmp-to-gif
+   (uxul-world::resize-bmp-blob (car imgs) 32 32)))
 
 (defun annotated-image (img ann)
   "Add a (lower-left) annotation."

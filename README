@@ -3,8 +3,12 @@ Last Updated 2010/05/19
 This Game is under development and may not be ready to use yet. I will
 try to keep this Readme current, but cant promise it.
 
-It depends on Lispbuilder-SDL (SVN-Revision 759 should work), LTK and
-lisp-magick.
+It depends on
+ Lispbuilder-SDL (SVN-Revision 759 should work)
+ LTK
+ skippy
+ flexi-streams
+ c2mop
 
 To start a testing-level, do (start-game).
 

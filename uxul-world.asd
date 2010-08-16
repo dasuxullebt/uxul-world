@@ -7,8 +7,7 @@
   :version "No Release Yet"
   :author "Christoph Senjak <firstName.secondName at googlemail.com>"
   :license "Copyright 2009 Christoph Senjak."
-  :depends-on (#:lispbuilder-sdl #:lisp-magick
-				 #:closer-mop
+  :depends-on (#:lispbuilder-sdl #:closer-mop
 				 #:cl-fad
                                  #:lispbuilder-sdl-image)
   :components ((:file "uxul-world")

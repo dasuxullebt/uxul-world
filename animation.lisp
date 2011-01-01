@@ -1,6 +1,6 @@
-;;; Copyright 2009 Christoph Senjak
+;;; Copyright 2009-2011 Christoph Senjak
 
-;; Basic definitions for animations. Needs lispbuilder-sdl.
+;; Basic definitions for animations.
 
 (in-package :uxul-world)
 
@@ -20,20 +20,28 @@
 ;; 		     :accessor images
 ;; ;		     :type (simple-array 'sdl:surface (*))
 ;; 		     :documentation "Array with the images")
+   (full-widths :initarg :full-widths
+		:initform (make-array (list 0))
+		:accessor full-widths
+		:documentation "Widths of images-1x")
+   (full-heights :initarg :full-heights
+		:initform (make-array (list 0))
+		:accessor full-heights
+		:documentation "Heights of images-1x")
    (images-2x :initarg :images-2x
-	      :initform (make-array (list 0) :element-type 'sdl:surface)
+	      :initform (make-array (list 0))
 	      :accessor images-2x
 	      :documentation "Array of double-sized images")
    (images-1x :initarg :images-1x
-	      :initform (make-array (list 0) :element-type 'sdl:surface)
+	      :initform (make-array (list 0))
 	      :accessor images-1x
 	      :documentation "Array of normal-sized images")
    (images-.5x :initarg :images-.5x
-	       :initform (make-array (list 0) :element-type 'sdl:surface)
+	       :initform (make-array (list 0))
 	       :accessor images-.5x
 	       :documentation "Array of half-sized images")
    (images-.25x :initarg :images-.25x
-		:initform (make-array (list 0) :element-type 'sdl:surface)
+		:initform (make-array (list 0))
 		:accessor images-.25x
 		:documentation "Array of quarter-sized images")	      
    (sprite-image-number :initform 0
@@ -97,9 +105,16 @@ below, this will refer to an animation in the *graphics-table*." )))
       (setf (already-jumped obj) 0)
       (setf (sprite-image-number obj) (mod (+ 1 (sprite-image-number obj)) (length (images obj))))))
   (when (visible obj)
-    (sdl:draw-surface-at-* (elt (images obj) (sprite-image-number obj))
-			   (zoom-trans (+ *current-translation-x* (round (x obj))))
-			   (zoom-trans (+ *current-translation-y* (round (y obj)))))))
+    (make-quad (elt (images obj) (sprite-image-number obj))
+	       (zoom-trans (round (x obj)))
+	       (zoom-trans (round (y obj)))
+	       
+	       (ash (elt (full-widths obj)
+				(sprite-image-number obj)) (+ 2 *zoom-ash*))
+	       (ash (elt (full-heights obj)
+				(sprite-image-number obj)) (+ 2 *zoom-ash*))
+
+)))
 
 ;additional methods to make life easier
 (defmethod pause ((obj animation))
@@ -129,28 +144,22 @@ below, this will refer to an animation in the *graphics-table*." )))
 (defun make-animation (frame-skip &rest image-list)
   "Create an animation from the list of animation-names given in the
 images-variable."
+  ;(format t "make-animation is being called~%")
   (make-instance 'animation
+		 :full-widths (mapcar
+			       #'(lambda (x) (bmp-width (cadr x))) image-list)
+		 :full-heights (mapcar
+				#'(lambda (x) (bmp-height (cadr x))) image-list)
 		 :images-2x (mapcar
-			     #'(lambda (x)
-				 (sdl:convert-surface :surface (sdl:load-image
-								(car x) :alpha 1 )))
+			     #'(lambda (x) (load-bmp-blob-into-texture (car x)))
 			     image-list)
 		 :images-1x (mapcar
-			     #'(lambda (x)
-				 (sdl:convert-surface :surface (sdl:load-image
-								(cadr x)
-								:alpha 1 )))
+			     #'(lambda (x) (load-bmp-blob-into-texture (cadr x)))
 			     image-list)
 		 :images-.5x (mapcar
-			     #'(lambda (x)
-				 (sdl:convert-surface :surface (sdl:load-image
-								(caddr x)
-								:alpha 1 )))
+			     #'(lambda (x) (load-bmp-blob-into-texture (caddr x)))
 			     image-list)
 		 :images-.25x (mapcar
-			     #'(lambda (x)
-				 (sdl:convert-surface :surface (sdl:load-image
-								(cadddr x)
-								:alpha 1 )))
+			     #'(lambda (x) (load-bmp-blob-into-texture (cadddr x)))
 			     image-list)
 		 :sprite-delay frame-skip))

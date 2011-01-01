@@ -1,4 +1,4 @@
-;;; Copyright 2009 Christoph Senjak
+;;; Copyright 2009-2011 Christoph Senjak
 
 (defpackage #:uxul-world
 	(:use

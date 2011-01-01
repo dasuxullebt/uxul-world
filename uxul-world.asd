@@ -7,13 +7,15 @@
   :version "No Release Yet"
   :author "Christoph Senjak <firstName.secondName at googlemail.com>"
   :license "Copyright 2009 Christoph Senjak."
-  :depends-on (#:lispbuilder-sdl #:closer-mop
+  :depends-on (#:lispbuilder-sdl #:cl-opengl
+				 #:closer-mop
 				 #:cl-fad
                                  #:lispbuilder-sdl)
   :components ((:file "uxul-world")
                (:file "constants")
                (:file "macros")
 	       (:file "bmp")
+	       (:file "opengl")
                (:file "xy-coordinates")
                (:file "collision")
                (:file "files")

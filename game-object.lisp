@@ -1,4 +1,4 @@
-;;; Copyright 2009 Christoph Senjak
+;;; Copyright 2009-2011 Christoph Senjak
 
 (in-package :uxul-world)
 
@@ -128,10 +128,11 @@
 
 (defmethod draw-bounds ((obj game-object))
   "This function draws a rectangle with the Object's Bounds. May be useful for some debug-spam"
-  (sdl:draw-rectangle-* (+ (x obj) *current-translation-x*)
-			(+ (y obj) *current-translation-y*)
-			(width obj) (height obj)
-			:color sdl:*BLACK*))
+  ;; (sdl:draw-rectangle-* (+ (x obj) *current-translation-x*)
+  ;; 			(+ (y obj) *current-translation-y*)
+  ;; 			(width obj) (height obj)
+  ;; 			:color sdl:*BLACK*)
+)
 
 (defun collide-blocks (moving-rectangle standing-rectangle collision)
   "as MANY collision-methods need to move the moving-object around the

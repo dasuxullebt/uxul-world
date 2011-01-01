@@ -1,6 +1,6 @@
 ;;; -*- lisp -*-
 
-;;; Copyright 2010 Christoph Senjak
+;;; Copyright 2010-2011 Christoph Senjak
 
 (in-package :uxul-world)
 

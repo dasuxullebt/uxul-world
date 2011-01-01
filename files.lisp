@@ -1,4 +1,4 @@
-;;; Copyright 2009 Christoph Senjak
+;;; Copyright 2009-2011 Christoph Senjak
 
 ;; This file declares the constants for loading different files and
 ;; file-formats.

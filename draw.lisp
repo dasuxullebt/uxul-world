@@ -1,4 +1,4 @@
-;;; Copyright 2009 Christoph Senjak
+;;; Copyright 2009-2011 Christoph Senjak
 
 ;; various draw-methods
 
@@ -28,28 +28,14 @@
 
 (defmethod draw ((obj room))
   (let ((*current-translation-x*
-	 #|(cond
-	   ((< (- (x (graphic-centralizer obj)) 400) 0) 0)
-	   ((> (+ (x (graphic-centralizer obj)) 400) (width obj))
-	    (- 800 (width obj)))
-	   (T
-	    (- 400 (x (graphic-centralizer obj)))))|#
-	 (- (ash 400 (- *zoom-ash*)) (x (graphic-centralizer obj)))
-	  )
+	 (*  2 (- 400 (x (graphic-centralizer obj)))))
 	(*current-translation-y*
-	 #|(cond
-	   ((< (- (y (graphic-centralizer obj)) 300) 0) 0)
-	   ((> (+ (y (graphic-centralizer obj)) 300) (height obj))
-	    (- 600 (height obj)))
-	   (T
-	    (- 300 (y (graphic-centralizer obj)))))|#
-	 (- (ash 300 (- *zoom-ash*)) (y (graphic-centralizer obj)))
-	  ))
+	 (* 2 (- 300 (y (graphic-centralizer obj))))))
     (draw-background *current-translation-x* *current-translation-y*)
+    (gl:scale *zoomx* (- *zoomy*) 1)
+    (gl:translate *current-translation-x* *current-translation-y* 0)
     (dolist (image (get-objects obj 'uxul-world::game-object))
-      (if (and (redraw image)
-	       (visible image)
-	       (rectangle-in-screen image)) (draw image)))))
+      (and (redraw image) (visible image) (draw image)))))
 
 
 ;; FIXME
@@ -61,20 +47,14 @@
 	   (old-draw-rectangle obj :r 255 :g 255 :b 255))
 
   ;;; FIXME ************
-  (sdl:draw-box-*
-   10 10 (floor (* (power obj) (/ (- +screen-width+ 20) 10))) 10
-   :color (sdl:color :r (abs *player-bar-color*) :g (abs *player-bar-color*) :b (abs *player-bar-color*)))
+  ;; (sdl:draw-box-*
+  ;;  10 10 (floor (* (power obj) (/ (- +screen-width+ 20) 10))) 10
+  ;;  :color (sdl:color :r (abs *player-bar-color*) :g (abs *player-bar-color*) :b (abs *player-bar-color*)))
   (incf *player-bar-color* 5)
   (if (= *player-bar-color* 255) (setf *player-bar-color* -255))
 
   (call-next-method))
 
-(defmethod draw ((obj stone))
-  (call-next-method)
-  #+nil(if (rectangle-in-screen obj)
-      (old-draw-rectangle obj :r 255 :g 255 :b 255)))
+(defmethod draw ((obj stone)) (call-next-method))
 
-(defmethod draw ((obj simple-enemy))
-  (call-next-method)
-  #+nil(if (rectangle-in-screen obj)
-      (old-draw-rectangle obj :r 255 :g 255 :b 255)))
+(defmethod draw ((obj simple-enemy)) (call-next-method))

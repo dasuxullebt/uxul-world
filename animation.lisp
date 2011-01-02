@@ -4,9 +4,6 @@
 
 (in-package :uxul-world)
 
-(defparameter *zoom-ash* -1)
-(defmacro zoom-trans (x) `(ash ,x *zoom-ash*))
-
 (defparameter *graphics-table* nil)
 
 ;; the functions may assume that the contents of a graphics-file -
@@ -23,27 +20,15 @@
    (full-widths :initarg :full-widths
 		:initform (make-array (list 0))
 		:accessor full-widths
-		:documentation "Widths of images-1x")
+		:documentation "Widths of images")
    (full-heights :initarg :full-heights
 		:initform (make-array (list 0))
 		:accessor full-heights
-		:documentation "Heights of images-1x")
-   (images-2x :initarg :images-2x
-	      :initform (make-array (list 0))
-	      :accessor images-2x
-	      :documentation "Array of double-sized images")
-   (images-1x :initarg :images-1x
-	      :initform (make-array (list 0))
-	      :accessor images-1x
-	      :documentation "Array of normal-sized images")
-   (images-.5x :initarg :images-.5x
-	       :initform (make-array (list 0))
-	       :accessor images-.5x
-	       :documentation "Array of half-sized images")
-   (images-.25x :initarg :images-.25x
-		:initform (make-array (list 0))
-		:accessor images-.25x
-		:documentation "Array of quarter-sized images")	      
+		:documentation "Heights of images")
+   (images :initarg :images
+	   :initform (make-array (list 0))
+	   :accessor images
+	   :documentation "Array of images")
    (sprite-image-number :initform 0
 			:initarg :sprite-image-number
 			:accessor sprite-image-number
@@ -83,18 +68,6 @@ will be used to minimize the number of file-accesses for loading
 animations. For any animation created from a file by the api from
 below, this will refer to an animation in the *graphics-table*." )))
 
-(defmethod images ((obj animation))
-  (cond
-    ((= *zoom-ash* 0)
-     (images-2x obj))
-    ((= *zoom-ash* -1)
-     (images-1x obj))
-    ((= *zoom-ash* -2)
-     (images-.5x obj))
-    ((= *zoom-ash* -3)
-     (images-.25x obj))))
-
-
 (defmethod draw ((obj animation))
   (when (not (<= (sprite-delay obj) 0)) ;<=, because -a means "paused,
 					;but a is the delay when
@@ -106,15 +79,10 @@ below, this will refer to an animation in the *graphics-table*." )))
       (setf (sprite-image-number obj) (mod (+ 1 (sprite-image-number obj)) (length (images obj))))))
   (when (visible obj)
     (make-quad (elt (images obj) (sprite-image-number obj))
-	       (zoom-trans (round (x obj)))
-	       (zoom-trans (round (y obj)))
-	       
-	       (ash (elt (full-widths obj)
-				(sprite-image-number obj)) (+ 2 *zoom-ash*))
-	       (ash (elt (full-heights obj)
-				(sprite-image-number obj)) (+ 2 *zoom-ash*))
-
-)))
+	       (round (x obj))
+	       (round (y obj))
+	       (elt (full-widths obj) (sprite-image-number obj))
+	       (elt (full-heights obj) (sprite-image-number obj)))))
 
 ;additional methods to make life easier
 (defmethod pause ((obj animation))
@@ -146,20 +114,8 @@ below, this will refer to an animation in the *graphics-table*." )))
 images-variable."
   ;(format t "make-animation is being called~%")
   (make-instance 'animation
-		 :full-widths (mapcar
-			       #'(lambda (x) (bmp-width (cadr x))) image-list)
-		 :full-heights (mapcar
-				#'(lambda (x) (bmp-height (cadr x))) image-list)
-		 :images-2x (mapcar
-			     #'(lambda (x) (load-bmp-blob-into-texture (car x)))
-			     image-list)
-		 :images-1x (mapcar
-			     #'(lambda (x) (load-bmp-blob-into-texture (cadr x)))
-			     image-list)
-		 :images-.5x (mapcar
-			     #'(lambda (x) (load-bmp-blob-into-texture (caddr x)))
-			     image-list)
-		 :images-.25x (mapcar
-			     #'(lambda (x) (load-bmp-blob-into-texture (cadddr x)))
-			     image-list)
+		 :full-widths (mapcar #'bmp-width image-list)
+		 :full-heights (mapcar #'bmp-height image-list)
+		 :images (mapcar #'load-bmp-blob-into-texture
+				 image-list)
 		 :sprite-delay frame-skip))

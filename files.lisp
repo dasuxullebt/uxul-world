@@ -18,24 +18,17 @@
 	(h (bmp-height img)))
   (uxul-world::resize-bmp-blob img (max 1 (floor (/ w a))) (max 1 (floor (/ h a))))))
 
-(defun all-sizes (img)
-  (list img
-	(ash-sized-image img 2)
-	(ash-sized-image img 4)
-	(ash-sized-image img 8)))
-
 (defun init-bmp-file (file)
   "Load an image file into a Variable. Set |filename| (without .png
 and path) to a list with all sizes of that image."
-  (si (pathname-name file) 
-      (all-sizes
+  (si (pathname-name file)
        (with-open-file (in file :element-type '(unsigned-byte 8)) 
 	 (let* ((length (file-length in))
 		(content (make-array (list length)
 				     :element-type '(unsigned-byte 8)
 				     :adjustable nil)))
 	   (read-sequence content in)
-	   content)))))
+	   content))))
 
 (defun bmp-p (file)
   "Is the file relevant for initialization? So far only .png-files are

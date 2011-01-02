@@ -52,7 +52,7 @@
 (defun stretched-image (imgs)
   "Resize that image to 32x32 and convert it into a ppm."
   (bmp-to-gif
-   (uxul-world::resize-bmp-blob (car imgs) 32 32)))
+   (uxul-world::resize-bmp-blob imgs 32 32)))
 
 (defun annotated-image (img ann)
   "Add a (lower-left) annotation."

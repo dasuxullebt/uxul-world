@@ -28,9 +28,9 @@
 
 (defmethod draw ((obj room))
   (let ((*current-translation-x*
-	 (*  2 (- 400 (x (graphic-centralizer obj)))))
+	 (* (- +screen-width+ (x (graphic-centralizer obj)))))
 	(*current-translation-y*
-	 (* 2 (- 300 (y (graphic-centralizer obj))))))
+	 (* (- +screen-height+ (y (graphic-centralizer obj))))))
     (draw-background *current-translation-x* *current-translation-y*)
     (gl:scale *zoomx* (- *zoomy*) 1)
     (gl:translate *current-translation-x* *current-translation-y* 0)

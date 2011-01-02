@@ -16,8 +16,8 @@
     id))
 
 (defun make-quad (id x y w h)
-  (setf x (- (+ x x) +screen-width+ ))
-  (setf y (- (+ y y)  +screen-height+))
+  (setf x (- x +screen-width+ ))
+  (setf y (- y +screen-height+))
   (gl:bind-texture :texture-2d id)
   (gl:with-primitive :quads
     (gl:tex-coord 0 0) (gl:vertex x (+ y h))

@@ -115,6 +115,17 @@ all."
 		    :displaced-index-offset o)
 	(subseq sequence o (+ o l)))))
 
+(defun blit-image (x y src-width src-height src-blob
+		   dst-width dst-height dst-blob)
+  (declare (ignore dst-height))
+  (do ((cx 0 (1+ cx))) ((= cx src-width))
+    (do ((cy 0 (1+ cy))) ((= cy src-height))
+      (let ((src-pos (* 4 (+ cx (* cy src-width))))
+	    (dst-pos (* 4 (+ (+ x cx) (* (+ y cy) dst-width)))))
+	(do ((i 0 (1+ i))) ((= i 4))
+	  (setf (elt dst-blob (+ i dst-pos))
+		(elt src-blob (+ i src-pos))))))))
+
 (defun resize-pixeldata
     (argb-pixeldata old-width old-height new-width new-height
      &optional (new-pixeldata (make-array (list (* 4 new-width new-height))

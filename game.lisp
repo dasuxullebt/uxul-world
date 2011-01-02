@@ -35,8 +35,8 @@ drawn (for very slow computers)"
 
        (gl:hint :perspective-correction-hint :nicest)
 
-
        (let ((*graphics-table* (make-hash-table :test #'equal))
+	     (*spritesheet-id* (load-spritesheet))
 	     (*zoomx* (/ 1.0 +screen-width+))
 	     (*zoomxi* (/ .01 +screen-width+))
 	     (*zoomy* (/ 1.0 +screen-height+))

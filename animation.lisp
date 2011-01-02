@@ -114,8 +114,7 @@ below, this will refer to an animation in the *graphics-table*." )))
 images-variable."
   ;(format t "make-animation is being called~%")
   (make-instance 'animation
-		 :full-widths (mapcar #'bmp-width image-list)
-		 :full-heights (mapcar #'bmp-height image-list)
-		 :images (mapcar #'load-bmp-blob-into-texture
-				 image-list)
+		 :full-widths (mapcar #'car image-list)
+		 :full-heights (mapcar #'cadr image-list)
+		 :images (mapcar #'cddr image-list)
 		 :sprite-delay frame-skip))

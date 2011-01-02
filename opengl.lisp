@@ -15,13 +15,26 @@
     (gl:flush)
     id))
 
-(defun make-quad (id x y w h)
-  (setf x (- x +screen-width+ ))
-  (setf y (- y +screen-height+))
-  (gl:bind-texture :texture-2d id)
-  (gl:with-primitive :quads
-    (gl:tex-coord 0 0) (gl:vertex x (+ y h))
-    (gl:tex-coord 1 0) (gl:vertex  (+ x w) (+ y h))
-    (gl:tex-coord 1 1) (gl:vertex (+ x w) y)
-    (gl:tex-coord 0 1) (gl:vertex x y)))
+(defun load-spritesheet ()
+  (let*
+      ((id (car (gl:gen-textures 1)))
+       (wh (cadr *spritesheet*))
+       (pix (car *spritesheet*)))
+    (gl:bind-texture :texture-2d id)
+    (gl:tex-image-2d :texture-2d 0 :rgba8 wh wh 0 :bgra :unsigned-byte pix)
+    (gl:tex-parameter :texture-2d :texture-min-filter :linear)
+    (gl:tex-parameter :texture-2d :texture-mag-filter :linear)
+    (gl:flush)
+    id))
+
+(defun make-quad (imgs x y w h)
+  (destructuring-bind (x1 y1 x2 y2) imgs
+    (setf x (- x +screen-width+))
+    (setf y (- y +screen-height+))
+    (gl:bind-texture :texture-2d *spritesheet-id*)
+    (gl:with-primitive :quads
+      (gl:tex-coord x1 y1) (gl:vertex x (+ y h))
+      (gl:tex-coord x2 y1) (gl:vertex  (+ x w) (+ y h))
+      (gl:tex-coord x2 y2) (gl:vertex (+ x w) y)
+      (gl:tex-coord x1 y2) (gl:vertex x y))))
 

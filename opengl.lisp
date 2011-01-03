@@ -31,10 +31,12 @@
   (destructuring-bind (x1 y1 x2 y2) imgs
     (setf x (- x +screen-width+))
     (setf y (- y +screen-height+))
-    (gl:bind-texture :texture-2d *spritesheet-id*)
-    (gl:with-primitive :quads
-      (gl:tex-coord x1 y1) (gl:vertex x (+ y h))
-      (gl:tex-coord x2 y1) (gl:vertex  (+ x w) (+ y h))
-      (gl:tex-coord x2 y2) (gl:vertex (+ x w) y)
-      (gl:tex-coord x1 y2) (gl:vertex x y))))
-
+    ;(gl:bind-texture :texture-2d *spritesheet-id*)
+    (macrolet ((writedown (&rest vars)
+		 `(progn
+		    ,@(mapcar #'(lambda (var)
+				 `(setf (cffi:mem-aref uxul-world::*ptr* :float (1- (incf uxul-world::*offset*))) (float ,var 0.0))) vars))))
+      (writedown x1 y1 x (+ y h)
+		 x2 y1 (+ x w) (+ y h)
+		 x2 y2 (+ x w) y
+		 x1 y2 x y))))

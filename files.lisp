@@ -36,6 +36,7 @@ relevant."
 
 (defvar *spritesheet*)
 (defvar *spritesheet-id*)
+(defvar *buffer-id*)
 
 (defun init-bmp-files ()
   (let* ((names (remove-if-not #'bmp-p

@@ -28,7 +28,8 @@
     id))
 
 (defun make-quad (imgs x y w h)
-  (destructuring-bind (x1 y1 x2 y2) imgs
+  (destructuring-bind (x1 y1 x2 y2 bla blubb) imgs
+    (declare (ignore bla blubb))
     (setf x (- x +screen-width+))
     (setf y (- y +screen-height+))
     ;(gl:bind-texture :texture-2d *spritesheet-id*)

@@ -1,23 +1,32 @@
-Last Updated 2010/05/19
+Last Updated 2011/03/22
 
 This Game is under development and may not be ready to use yet. I will
-try to keep this Readme current, but cant promise it.
+try to keep this Readme current, but can not promise it.
 
 It depends on
- Lispbuilder-SDL (SVN-Revision 759 should work)
+ Lispbuilder-SDL
+ CL-OpenGL
  LTK
  skippy
  flexi-streams
  c2mop
 
-To start a testing-level, do (start-game).
+You should be able to easily fetch all the dependencies via QuickLisp.
 
-To start the leveleditor, do (level-editor), it will return a
-sequence. Save this sequence somewhere, say *a*. Then to play it, hit
+It is mainly developed under SBCL, under Linux x86_64, porting to
+other platforms is planned.
 
-(start-game :room-function #'(lambda () (create-room-from-item-list *a*)))
+To start a testing-level, do (uxul-world:start-game).
 
-To edit *a* again, do (level-editor *a*), and your edited level will
-be returned.
+To start the leveleditor, do (uxul-world-leveleditor:level-editor), it
+will return a sequence. Save this sequence somewhere, say *a*. Then to
+play it, hit
 
-I cant promise that all revisions I will make will work.
+(start-game :room-function #'(lambda ()
+	    (uxul-world::create-room-from-item-list *a*)))
+
+#### Currently, a Bug prevents from using the leveleditor twice
+#To edit *a* again, do (level-editor *a*), and your edited level will
+#be returned.
+
+I cannot promise that all revisions I will make will work.

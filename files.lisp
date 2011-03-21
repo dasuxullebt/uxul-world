@@ -78,7 +78,8 @@ relevant."
        (si (pathname-name name)
 	   `(,width ,height
 		    ,@(mapcar #'(lambda (x) (/ x sidelength 1.0))
-			      (list cx* cy* (+ cx* width) (+ cy* height)))))
+			      (list cx* cy* (+ cx* width) (+ cy* height)))
+		    ,cx* ,cy*))
        (incf cx)
        (cond ((= cx optimal-x-num)
 	      (incf cy)
@@ -86,7 +87,9 @@ relevant."
 	      (setf cx 0 cx* 0))
 	     (T (incf cx* max-width))))
      names pixeldata widths heights)
-    (setf *spritesheet* (list new-image-data sidelength))))
+    (setf *spritesheet* (list new-image-data sidelength))
+    ;; since the output of "setf" kills emacs, I return Nil here ...
+    nil))
 
 
 (defun init-files ()

@@ -126,6 +126,18 @@ all."
 	  (setf (elt dst-blob (+ i dst-pos))
 		(elt src-blob (+ i src-pos))))))))
 
+(defun sub-image (x y width height source-blob source-width source-height)
+  (create-bmp-image
+   width height
+   (lambda (pixels)
+     (do ((cx 0 (1+ cx))) ((= cx width))
+       (do ((cy 0 (1+ cy))) ((= cy height))
+	 (let ((dst-pos (* 4 (+ cx (* cy width))))
+	       (src-pos (* 4 (+ cx x (* (+ cy y) source-width)))))
+	   (do ((i 0 (1+ i))) ((= i 4))
+	     (setf (elt pixels (+ i dst-pos))
+		   (elt source-blob (+ i src-pos))))))))))
+
 (defun resize-pixeldata
     (argb-pixeldata old-width old-height new-width new-height
      &optional (new-pixeldata (make-array (list (* 4 new-width new-height))

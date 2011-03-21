@@ -47,12 +47,20 @@
     (skippy:add-image image data-stream)
     (flexi-streams:with-output-to-sequence (out)
       (skippy:write-data-stream data-stream out))))
-      
 
 (defun stretched-image (imgs)
-  "Resize that image to 32x32 and convert it into a ppm."
-  (bmp-to-gif
-   (uxul-world::resize-bmp-blob imgs 32 32)))
+  "Resize that image to 32x32 and convert it into a gif."
+  (let*
+      ((w (car imgs))
+       (h (cadr imgs))
+       (x (elt imgs 6))
+       (y (elt imgs 7))
+       (*spritesheet* uxul-world::*spritesheet*)
+       (image (uxul-world::sub-image x y w h (car *spritesheet*)
+				     (cadr *spritesheet*)
+				     (cadr *spritesheet*))))
+    (bmp-to-gif
+     (uxul-world::resize-bmp-blob image 32 32))))
 
 (defun annotated-image (img ann)
   "Add a (lower-left) annotation."

@@ -1,7 +1,4 @@
-2009/08/20 starting the level-editor produces an error
- - FIXED (at least didnt happen again)
-
-2009/04/09 Setting the Animation of Jumping doesnt always work correct
+2009/04/09 Setting the Animation of Jumping does not always work correct
 
 2009/04/10 Random numeric type-errors
  - 2009/08/19 Solved. The Problem were Objects that were drawn too
@@ -14,4 +11,6 @@
 2011/01/02 Background not implemented
 
 2011/01/02 A lot of deprecated stuff in the code must be cleaned
+
+2011/03/22 Leveleditor can only be called once
 
